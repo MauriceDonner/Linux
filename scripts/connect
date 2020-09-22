@@ -36,21 +36,23 @@ echo 'Restarting Network Interface....'
 
 # Wait until connection is established
 
-while true; do
-    # Becomes "wlp3s0" if connected
-    WIFISTATUS=$(cat /proc/net/wireless | tail -1 | awk -F ':' '{print $1}')
-    # Stores exchanged information in an integer
-    WIFISTATUS2=$(cat /proc/net/wireless | tail -1 | cut -b 62-67)
-    clear
-    echo 'Waiting for Connection'
-    if [[ "$WIFISTATUS" == "wlp3s0" ]] ; then
-	if [ $WIFISTATUS2 -gt 30 ] ; then
-	    break
-	fi
-    fi
-    echo "Connection Status: $WIFISTATUS2 / 30"
-    sleep 0.1;
-done
+if [[ "$WIFIPASSWORD" != "" ]] ; then
+	while true; do
+	    # Becomes "wlp3s0" if connected
+	    WIFISTATUS=$(cat /proc/net/wireless | tail -1 | awk -F ':' '{print $1}')
+	    # Stores exchanged information in an integer
+	    WIFISTATUS2=$(cat /proc/net/wireless | tail -1 | cut -b 62-67)
+	    clear
+	    echo 'Waiting for Connection'
+	    if [[ "$WIFISTATUS" == "wlp3s0" ]] ; then
+		if [ $WIFISTATUS2 -gt 30 ] ; then
+		    break
+		fi
+	    fi
+	    echo "Connection Status: $WIFISTATUS2 / 30"
+	    sleep 0.1;
+	done
+fi
 
 echo "Successfully connected to ${WIFINAME}"
 
