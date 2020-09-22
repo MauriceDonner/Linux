@@ -1,0 +1,233 @@
+\documentclass{article}
+
+\usepackage[margin=4cm]{geometry}
+\usepackage{fancyhdr}
+    \pagestyle{fancy}
+\usepackage{fontspec}
+    \setsansfont{Linux Biolinum O}
+\usepackage{polyglossia}
+    \setmainlanguage{english}
+\usepackage{sectsty}
+    \sectionfont{\normalfont\sffamily\bfseries\color{blue!40!black}}
+    \subsectionfont{\normalfont\sffamily\bfseries\color{blue!30!black}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+    \lstset{language=Python,
+	basicstyle=\footnotesize\ttfamily,
+	breaklines=true,
+	framextopmargin=50pt,
+	frame=bottomline,
+	backgroundcolor=\color{white!86!black},
+	commentstyle=\color{blue},
+	keywordstyle=\color{red},
+	stringstyle=\color{orange!80!black}}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+\title{\textsf{\color{blue!40!black}Checklist for Debian System}}
+\author{Maurice Donner}
+
+\begin{document}
+
+\maketitle
+
+\section{Basic Linux terminal operations}
+The following commands are really important and you will use them a lot
+\begin{lstlisting}
+ls	    # List contents of a directory
+ls -lah	    # -list -all -humanreadable
+man	    # Displays manual pages
+cat	    # Print file in current terminal (quickly look at file contents)
+pwd	    # Print the current working directory
+cd	    # Change Directory, you will use this a lot
+rm	    # Removes Files (forever! be careful) | rmdir for empty directories
+cp	    # Copy file1 to file2 (cp file1 file2)
+mkdir	    # Create a new Directory
+find -name  # find a file (from the current directory)
+grep	    # Find words in a file
+tar -xvf    # Install Programs on linux that end on .tar.gz
+chmod	    # Change file Permissions quickly
+echo	    # Print a string to the terminal, or to file: echo "String" >> a.txt
+\end{lstlisting}
+Next, this is how you can quickly handle files in linux
+\begin{lstlisting}
+# Write a string, or sentence to a file. Using only one ">" will OVERWRITE the
+# file if it exists, so be careful. Using two ">>" will append to the file
+echo "test" >> a.txt 
+
+# You can use the output from one command as the input for another.
+# The following command will print ONLY THOSE LINES of a file, that contain
+# a specified string.
+cat "File.txt" | grep "string"
+# If you only want the first line in which it occurs, just pipe it again
+cat "File.txt" | grep "string" | head 1
+\end{lstlisting}
+
+\section{Program startup}
+Linux has startup files, that load everytime a certain program is started.
+\textbf{This is very useful}. For example \verb`.bashrc` is loaded, everytime
+you open a terminal. If you want to tell your terminal, in which paths it has to
+look for programs, this is where you would do it. Other examples are:
+\begin{lstlisting}
+/home/yourname/.profile		    # Loads on startup
+/home/yourname/.vimrc		    # Loads on starting vim
+/home/yourname/.config/i3/config    # Loads, when i3 is started
+\end{lstlisting}
+
+
+\section{Common Problems}
+\subsection{wpa\_supplicant}
+For automatic network connection make sure that the default interface 
+(in this case \verb`wlp3s0` is configured in your \verb`/etc/network/interfaces`
+):
+\begin{lstlisting}
+# The primary network interface
+# This makes sure the interface is configured on startup
+allow-hotplug wlp3s0
+iface wlp3s0 inet
+# Give a more verbose output for debugging dhcp
+wpa-debug-level 3
+# Path to your config file. Make sure it's correct
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+\end{lstlisting}
+
+\subsection{Fonts}
+Installing fonts is difficult. But it doesn't have to be. Just make sure to
+choose one directory (and only one) to include newly installed fonts from.
+The default is \\ \verb`/usr/share/fonts/`. Put all fonts you want to install there
+and run \verb'fc-cache' afterwards. Then, on startup, tell the system where the fonts
+are by putting the following line into your \verb`/home/yourname/.config/i3/config`:
+\begin{lstlisting}
+exex xset +fp /usr/share/fonts/
+\end{lstlisting}
+
+\subsection{Pc Speaker (beep!)}
+The Speaker can be quite annoying. To disable it, simply add two lines to \\
+\verb`/etc/modprobe.d/blacklist.conf` (the \verb`.conf` is important!!)
+\begin{lstlisting}
+blacklist pcspkr
+blacklist snd_pcsp
+\end{lstlisting}
+
+\subsection{Backlight}
+Configuring xbacklight to change screen brightness is not straightforward.
+You'll need to make some changes to \verb`/etc/X11/xorg.conf`.
+If you get the "No outputs have backlight property" error, it is because
+xrandr/xbacklight does not choose the right directory in \verb'/sys/class/backlight'.
+You can specify the directory by setting the Backlight option of the device
+section in xorg.conf. For instance, if the name of the directory is
+\verb'intel_backlight', the device section can be configured as follows:
+\begin{lstlisting}
+/etc/X11/xorg.conf
+-------------------
+Section "Device"
+    Identifier  "Card0"
+    Driver      "intel"
+    Option      "Backlight"  "intel_backlight"
+EndSection
+\end{lstlisting}
+After a reboot, you should be able to use the normal commands
+\verb`xbacklight -dec 20` etc.
+
+\subsection{Copy to clipboard in vim}
+It \textbf{IS} possible to yank lines to the system clipboard in vim.
+Add the following lines to your \verb`.vimrc` 
+\begin{lstlisting}
+"yank to clipboard
+if has("clipboard")
+    set clipboard=unnamed " copy to the system clipboard
+
+    if has("unnamedplus") " X11 support
+	set clipboard+=unnamedplus
+    endif
+endif
+" paste from clipboard
+vnoremap <C-c> :w !pbcopy<CR><CR> noremap <C-v> :r !pbpaste<CR><CR>
+" }}}
+\end{lstlisting}
+Then install \verb`vim-gtk` through your package-manager.
+
+\section{Stuff i just cant seem to remember. And tips}
+\begin{itemize}
+\item 
+Pavucontrol for microphone levels: \verb`./ts3client_runscript.sh` \\
+To create bootable usb-drive:
+\begin{lstlisting}
+sudo dd bs=4M if=/path/to/iso of=/dev/sd$$ status=progress && sync # $$
+\end{lstlisting}
+\item
+To create FAT32 Filesystem use
+\begin{lstlisting}
+mkfs -t vfat /dev/sd
+\end{lstlisting}
+\item
+Copy stuff to clipboard
+\begin{lstlisting}
+echo "test" | tr -d '\n' | xclip -selection clipboard/primary
+\end{lstlisting}
+\item
+Colors of urxvt
+\begin{lstlisting}
+color0	(black)	= Black
+color1	(red)	= Red3
+color2	(green)	= Green3
+color3	(yellow)    = Yellow3
+color4	(blue)	= Blue3
+color5	(magenta)   = Magenta3
+color6	(cyan)	= Cyan3
+color7	(white)	= AntiqueWhite
+color8	(bright black)	= Grey25
+color9	(bright red)	= Red
+color10	(bright green)	= Green
+color11	(bright yellow)	= Yellow
+color12	(bright blue)	= Blue
+color13	(bright magenta)    = Magenta
+color14	(bright cyan)	= Cyan
+color15	(bright white)	= White
+\end{lstlisting}
+\item
+For large screens i recommend adding this to \verb`.Xresources`
+\begin{lstlisting}
+Urxvt*font: xft:consolas:size=12
+\end{lstlisting}
+\item
+The default font (in case you want to revert is \verb`Urxvt*font: 6x13` \\
+To configure mouse speed:
+\begin{lstlisting}
+xinput --list			    # Lists all devices (mouse is 10)
+xinput --list-props 10		    # Find out Transf. Matrix ID (140)
+xinput set-prop 10 140 .5 0 0 0 .5 0 0 0 1  # Set mouse speed to 50%
+\end{lstlisting}
+\item
+To connect Apple devices, you need to configure the USB protocol. \\
+Identify the usbmuxd process: Open up a terminal and type,
+\begin{lstlisting}
+ps aux | grep usbmux
+\end{lstlisting}
+which should return an output like
+\begin{lstlisting}
+    usbmux    6781  0.0  0.0 230120  6584 ?        Sl
+    09:30   0:00 /usr/sbin/usbmuxd -u -U usbmux
+\end{lstlisting}
+Kill usbmuxd: The highlighted number (6781) above is the process id/number for
+usbmuxd (unique for all systems and the state of a system). What we want to do
+is to kill this process and restart it. This can be done by the following
+command in the terminal,
+\begin{lstlisting}
+sudo kill -9 6781
+\end{lstlisting}
+restart usbmuxd: With usbmuxd dead we need to manually start it again in
+order for Ubuntu to one again recognize the iPhone/iPad/iPod. Bring up the
+terminal once again and type,
+\begin{lstlisting}
+sudo usbmuxd -u -U usbmux
+\end{lstlisting}
+\end{itemize}
+\end{document}
