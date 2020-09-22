@@ -1,0 +1,63 @@
+#!/bin/bash
+# This Wifi Script works with wpa_supplicant and should be sufficient if you
+# only want to connect to a Home Network with WPA/WPA2. For Public networks
+# you might have to use a captive portal
+# Take the first Argument and define Wifiname
+WIFINAME=$1
+
+if [[ "$WIFINAME" == "" ]] ; then
+    echo "Error: Please enter a valid SSID 'connect [SSID]'" #TODO See bottom
+else
+    echo "Enter Wifi Password (Leave empty if open):"
+fi
+
+read WIFIPASSWORD
+
+WIFIEXISTS=$(cat /etc/wpa_supplicant/wpa_supplicant.conf | grep -e "$WIFINAME")
+#if [[ "$WIFIEXISTS" == "" ]] ; then
+    if [[ "$WIFIPASSWORD" == "" ]] ; then
+	printf "network={\n\tssid=\"$WIFINAME\"\n\tkey_mgmt=NONE\n\tpriority=1\n}\n" >> /etc/wpa_supplicant/wpa_supplicant.conf
+    else
+	wpa_passphrase "$WIFINAME" "$WIFIPASSWORD" >> /etc/wpa_supplicant/wpa_supplicant.conf
+    fi
+#fi
+
+# Restart Network interface
+echo 'Restarting Network Interface.'
+ifdown --force wlp3s0
+clear
+echo 'Restarting Network Interface..'
+sleep 3;
+clear
+echo 'Restarting Network Interface...'
+ifup wlp3s0
+clear
+echo 'Restarting Network Interface....'
+
+# Wait until connection is established
+
+while true; do
+    # Becomes "wlp3s0" if connected
+    WIFISTATUS=$(cat /proc/net/wireless | tail -1 | awk -F ':' '{print $1}')
+    # Stores exchanged information in an integer
+    WIFISTATUS2=$(cat /proc/net/wireless | tail -1 | cut -b 62-67)
+    clear
+    echo 'Waiting for Connection'
+    if [[ "$WIFISTATUS" == "wlp3s0" ]] ; then
+	if [ $WIFISTATUS2 -gt 30 ] ; then
+	    break
+	fi
+    fi
+    echo "Connection Status: $WIFISTATUS2 / 30"
+    sleep 0.1;
+done
+
+echo "Successfully connected to ${WIFINAME}"
+
+if [[ "$WIFIPASSWORD" == "" ]] ; then
+    chromium --no-sandbox --new-window http://clients3.google.com/generate_204 & 
+fi
+
+clear
+
+#TODO Give an error message for when the connection fails (Maybe ping something and if no answer then)

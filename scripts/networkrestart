@@ -1,0 +1,4 @@
+#!/bin/bash
+sudo ifdown --force wlp3s0
+sleep 3;
+sudo ifup wlp3s0

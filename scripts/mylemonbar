@@ -1,0 +1,191 @@
+#!/bin/bash
+
+# {{{ Define Variables
+
+col_t="#C65087"
+col_b="#08090a"
+col_song="#778695"
+
+font1="-*-gohufont-medium-*-*-*-11-*-*-*-*-*-*-*"
+font2="-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1"
+clockicon="%{T2}\ue015"
+dateicon="%{T2}\ue26a"
+
+# }}}
+
+# {{{ Workspace Tab
+
+Workspace() {
+	WSNUM=$(i3-msg -t get_workspaces | awk -F 'true' '{print $1}' | tail -c 14 | cut -c 1)
+	WINDOWNAME=$(xdotool getwindowfocus getwindowname)
+	if [[ "$WSNUM" == 0 ]] ; then
+		WSicon="\ue17e\ue17d"
+	elif [[ "$WSNUM" == 1 ]] ; then
+		WSicon="\ue17e"
+	elif [[ "$WSNUM" == 2 ]] ; then
+		WSicon="\ue17f"
+	elif [[ "$WSNUM" == 3 ]] ; then
+		WSicon="\ue180"
+	elif [[ "$WSNUM" == 4 ]] ; then
+		WSicon="\ue181"
+	elif [[ "$WSNUM" == 5 ]] ; then
+		WSicon="\ue182"
+	elif [[ "$WSNUM" == 6 ]] ; then
+		WSicon="\ue183"
+	elif [[ "$WSNUM" == 7 ]] ; then
+		WSicon="\ue184"
+	elif [[ "$WSNUM" == 8 ]] ; then
+		WSicon="\ue185"
+	elif [[ "$WSNUM" == 9 ]] ; then
+		WSicon="\ue186"
+	fi
+
+	echo -e "%{T2}$WSicon %{T1}$WINDOWNAME"	
+}
+
+# }}}
+
+# {{{ Clock
+
+Clock() {
+        DATETIME=$(date "+%a %b %d")
+	CLOCK=$(date "+%T")
+
+        echo -e "$dateicon $DATETIME $clockicon $CLOCK %{F-}%{B-}"
+}
+
+# }}}
+
+# {{{ Songtitle
+
+Spotify() {
+	SONGNAME=$(wmctrl -l | grep '0x01200001' | awk -F 'X220 ' '{print $2}')
+	if [[ "$SONGNAME" == "Spotify" ]] ; then
+	    echo -e "%{F${col_song}}%{T2}\ue09b %{T1}Paused %{F${col_t}}"
+	else 
+	    echo -e "%{F${col_song}} %{T1}$SONGNAME %{F${col_t}}" 
+	fi
+}
+Spotify() {
+# if spotify is started
+if [ "$(pidof spotify)" ] ; then
+    # status can be: Playing, Paused or Stopped
+    status=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus'|egrep -A 1 "string"|cut -b 26-|cut -d '"' -f 1|egrep -v ^$`
+    artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$`
+    album=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "album"|egrep -v "album"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+    title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+fi
+
+SONGNAME="$artist - $title"
+
+if [ $status == 'Playing' ] ; then
+	echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
+elif [ $status == 'Paused' ] ; then
+	echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
+fi
+
+}
+
+# }}}
+
+# {{{ Wifi Status
+
+Wifi() {
+	WIFION=$(cat /proc/net/wireless | tail -1 | awk -F ':' '{print $1}')
+	WIFINAME=$(iwgetid | awk -F '"' '{print $2}')
+	
+	if [[ "$WIFION" == "wlp3s0" ]] ; then #TODO Conditional Environment for connection via Ethernet
+
+	    QUALITY=$(cat /proc/net/wireless | awk -F ' ' 'NR==3 {print $3}' | cut -b 1-2)
+	    QPERCENT=$(awk "BEGIN {print 100 * $QUALITY / 70 - 1}" | cut -b 1-2)
+		if [[ "$QUALITY" > 50 ]] ; then
+		    wifiicon="\ue222"
+		elif [[ "$QUALITY" > 25 ]] ; then
+		    wifiicon="\ue221"
+		elif [[ "$QUALITY" > 0 ]] ; then
+		    wifiicon="\ue220"
+		else
+		    wifiicon="\ue21f"
+		fi 
+	    echo -e "%{T2}$wifiicon %{T1}$WIFINAME " 
+
+	else
+	    echo -e "%{T2}\ue21f %{T1} Not connected"
+	fi
+}
+
+# }}}
+
+# {{{ System Volume
+
+Volume() {
+	VOLPERC=$(amixer sget Master | grep 'Left:' | awk -F'[][]' '{print $2}')
+	SPEAKER=$(amixer sget Master | grep 'Left:' | awk -F'[][]' '{print $4}')
+	if [[ "$SPEAKER" == "off" ]] ; then
+		speakericon="\ue04f"
+	elif [[ "$VOLPERC" < 50 ]] ; then
+		speakericon="\ue04e"
+	elif [[ "$VOLPERC" > 49 ]] ; then
+		speakericon="%{T2}\ue050"
+	fi
+
+	echo -e "$speakericon $VOLPERC"
+}
+
+# }}}
+
+# {{{ Battery
+
+Battery() {
+        BATPERC=$(acpi --battery | cut -d, -f2)
+	CHARGING=$(acpi --battery | cut -b 12-15)
+	LOWBAT=$(acpi --battery | cut -d, -f2 | cut -b 3)
+	if [[ "$CHARGING" == "Char" ]] ; then
+		chargingicon="\ue041"
+	elif [[ "$CHARGING" == "Disc" ]] ; then
+		chargingicon="\ue277"
+	elif [[ "$CHARGING" == "Unkn" ]] ; then
+		chargingicon="\ue041" batteryicon="\ue041"
+	fi
+
+	if [[ "$CHARGING" == "Full" ]] ; then
+		chargingicon="\ue041" batteryicon="\ue24b"
+	elif [[ "$LOWBAT" == "%" ]] ; then
+		batteryicon="\ue242"
+	elif [[ "$BATPERC" < 20 ]] ; then
+		batteryicon="\ue243"
+	elif [[ "$BATPERC" < 30 ]] ; then
+		batteryicon="\ue244"
+	elif [[ "$BATPERC" < 40 ]] ; then
+		batteryicon="\ue245"
+	elif [[ "$BATPERC" < 50 ]] ; then
+		batteryicon="\ue246"
+	elif [[ "$BATPERC" < 60 ]] ; then
+		batteryicon="\ue247"
+	elif [[ "$BATPERC" < 70 ]] ; then
+		batteryicon="\ue248"
+	elif [[ "$BATPERC" < 80 ]] ; then
+		batteryicon="\ue249"
+	elif [[ "$BATPERC" < 90 ]] ; then
+		batteryicon="\ue24a"
+	elif [[ "$BATPERC" > 89 ]] ; then
+		batteryicon="\ue24b"
+	fi
+
+        echo -e "%{T2}$chargingicon %{T2}$batteryicon $BATPERC"
+}
+
+# }}}
+
+# {{{ Output
+while true; do
+
+	status="%{l} $(Workspace)"	
+	status="$status %{c} $(Clock)"
+	status="$status %{r} $(Spotify) $(Wifi) \ $(Volume) \ $(Battery)" 
+	echo $status
+        sleep 1;
+
+done | lemonbar -g "x18" -B "${col_b}" -F "${col_t}" -f "$font1" -f "$font2"
+
+# }}}

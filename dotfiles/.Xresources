@@ -1,0 +1,11 @@
+Rxvt*background: #08090a
+Rxvt*foreground: #f79e8f
+URxvt.scrollBar:false
+URxvt.color0: #121212
+URxvt.color1: #ff131b
+URxvt.color2: #c65087
+URxvt.color9: #ff5917
+URxvt.color10: #c65087
+URxvt.color12: #0967b1
+
+URxvt*font: 6x13

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SCREENSIZE=$(xrandr | grep current | awk -F ' ' '{print $8}') 
+
+if [[ "$SCREENSIZE" == "1366" ]]; then
+    echo "Setting Screensize to 1920x1080"
+    exec xrandr --output LVDS1 --scale-from 1920x1080 --panning 1920x1080
+elif [[ "$SCREENSIZE" == "1920" ]]; then
+    echo "Setting Screensize to 1366x768"
+    exec xrandr --output LVDS1 --scale 1x1 --panning 1366x768
+else
+    echo "Error, resetting screen size"
+    exec xrandr --output LVDS1 --scale 1x1 --panning 1366x768
+fi
+    

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+MESSAGE=$1
+
+git add --all
+
+if [[ "$MESSAGE" == "" ]] ; then
+    DATE=$(date "+%d-%m-%y")
+    git commit -m "$DATE"
+else
+    git commit -m "$MESSAGE"
+fi
+
+git push

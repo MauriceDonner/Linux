@@ -1,0 +1,50 @@
+shell vim %s
+shell sudo mount /dev/sdb1 Drive/
+shell mkdir Stuff
+shell mkdir Bachelor
+shell mkdir Lectures
+shell cp %s /usr/
+shell 
+shell mkdir Chrome-Extensions
+shell  %s
+shell tar -xvf %s
+shell sudo cp %s /usr/share/fonts
+shell sudo vim blacklist
+shell mkdir Pictures
+shell mkdir Desktop
+shell sudo mkdir Trash
+shell mkdir Trash
+shell rmdirr %s
+rename python3.7
+shell rm -rf %s
+open_with vim
+shell mkdir David
+shell unzip %s
+shell rm %s
+shell rmdir %s
+search opt
+search java
+shell sudo mkdir java
+shell sudo tar -xvf /home/maurice/Downloads/jre-8u261
+shell chmod 777 %s
+search tex
+shell scconf
+shell sudo rm %s
+search share
+search doc
+search README
+search read
+open_with 
+search networ
+search net
+shell sudo vim %s
+search wpa
+search /etc
+search etc
+search netw
+search run
+search network
+search modpro
+search X11
+search passw
+search bash

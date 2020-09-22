@@ -1,0 +1,30 @@
+#!/bin/bash
+
+IMAGE=/tmp/i3lock.png
+SCREENSHOT="scrot $IMAGE"
+LOCK=/home/maurice/Pictures/lock.png
+SHADOW=/home/maurice/Pictures/Shadow.png
+SHADOWTMP=/tmp/shadow.png
+
+# Some Blur Types
+BLURTYPE="0x5"
+#BLURTYPE="0x2"
+#BLURTYPE="5x2"
+#BLURTYPE="2x8"
+#BLURTYPE="2x3"
+
+
+$SCREENSHOT
+
+# Write image dimensions into a variable
+X=$(identify -format '%[fx:w]' $IMAGE)
+Y=$(identify -format '%[fx:h]' $IMAGE)
+
+# Overlay a Shadow on your Screenshot
+convert $SHADOW -resize "$X x $Y!" $SHADOWTMP
+convert $IMAGE -blur $BLURTYPE $IMAGE 
+composite -gravity center $SHADOWTMP $IMAGE $IMAGE
+composite -gravity center $LOCK $IMAGE $IMAGE
+i3lock -i $IMAGE
+
+rm $SHADOWTMP $IMAGE

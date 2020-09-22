@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Write a temporary file with all the wifi names in it
+sudo iwlist wlp3s0 scan | grep -e 'ESSID' -e 'Encryption' >> wifi.temp
+
+# Number of available Networks
+N=$(cat wifi.temp | grep -c -e 'ESSID')
+
+# Now go through them all and give out a nice format:
+
+COUNTER=1
+
+declare -a WIFIARRAY # Store the Wifinames into Array to avoid double occuring Wifis
+
+while [ $COUNTER -lt $N ]; do # Somehow for doesnt fukken work
+
+    WIFINAME=$(cat wifi.temp | grep -e 'ESSID' | head -$COUNTER |
+	tail -1 | awk -F '"' '{print $2}')
+    SECURED=$(cat wifi.temp | grep -e 'Encryp' | head -$COUNTER |
+	tail -1 | awk -F: '{print $2}')
+
+    
+    if [[ "${WIFIARRAY[*]}" == *"$WIFINAME"* ]]; then
+	let COUNTER=COUNTER+1
+	continue
+    fi
+    WIFIARRAY+=($WIFINAME)
+
+    if [[ "$WIFINAME" == "\x00" ]] ; then # Sometimes there is a weird Wifi Name
+	printf ""
+    elif [[ "$SECURED" == "on" ]] ; then # Network is secured
+	printf "$COUNTER: [Secured] ${WIFINAME} \n" | grep --color "Secured"
+    elif [[ "$SECURED" == "off" ]] ; then # Network is open
+	printf "$COUNTER: [Open] ${WIFINAME} \n" | grep --color "Open"
+    else
+	printf "error 404 \n"
+    fi
+
+    let COUNTER=COUNTER+1
+done
+
+# Delete temp file
+mv -f wifi.temp /home/maurice/.local/share/Trash  
+     

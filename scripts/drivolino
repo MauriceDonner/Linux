@@ -1,0 +1,29 @@
+#!/bin/bash
+echo "Vorname des Fahrschülers:"
+
+read NAME
+
+echo "Drivolino Code:"
+
+read DRIVOLINO
+
+echo "Email-Adresse:"
+
+read EMAIL
+
+BODY="Hallo $NAME,
+
+Wir freuen uns, dass du dich für die Fahrschule EinStieg entschieden hast! Um den Ablauf einfacher zu gestalten, können sich unsere Schüler mithilfe der DRIVOLINO-App nun ihre Fahrstunden selbst buchen! Lade dir dazu einfach kostenlos über den folgenden Link die DRIVOLINO-App herunter:
+
+Play Store: https://play.google.com/store/apps/details?id=de.drivolino.drivolino&hl=de
+App Store (iOS): https://apps.apple.com/de/app/drivolino/id1193063507
+
+Dein Persönlicher Aktivierungscode lautet: $DRIVOLINO
+Bitte beachte, dass Fahrstunden erst dann gebucht werden können, wenn eine Anzahl von mindestens 5 Theoriestunden absolviert wurden!
+
+
+Wir von der Fahrschule EinStieg wünschen dir viel Erfolg bei deinem Führerschein!"
+
+echo "Sending to $EMAIL ..."
+
+exec mail -s "Willkommen bei der Fahrschule EinStieg" $EMAIL <<< "$BODY"

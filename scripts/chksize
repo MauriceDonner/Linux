@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR=$1
+
+MESSAGE=$(du -h $1)
+
+printf "=== Calculating Size of Directory $DIR ===\n"
+printf "$MESSAGE\n"
+printf "Press ENTER to continue..."
+read ENTER

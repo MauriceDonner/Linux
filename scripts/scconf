@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Count how many screens are connected
+CONNECTED=$(xrandr --current | grep --count " connected")
+echo "Screens Connected: $CONNECTED"
+
+# Create a variable for each screen
+for (( c=1; c<=$CONNECTED; c++ ))
+do
+    # The eval command creates named variables like $SCREEN_1, $SCREEN_2 etc.
+    eval "SCREEN_$c=$(xrandr --current | grep " connected" | awk -F ' ' '{print $1}' | sed -n "$c p")"
+done
+
+# Function that extends screens
+Extend() {
+    # Maybe detect which screens are turned on and cycle, read xrandr output for that
+    if [[ $CONNECTED == 2 ]]; then
+	exec xrandr --output "$SCREEN_1" --auto --output "$SCREEN_2" --auto --right-of "$SCREEN_1"
+    elif [[ $CONNECTED == 3 ]]; then
+	exec xrandr --output "$SCREEN_2" --auto --same-as "$SCREEN_1" --output "$SCREEN_1" --off --output "$SCREEN_3" --auto --left-of "$SCREEN_2"
+    else
+	echo 'Something went wrong!'
+    fi
+}
+
+Duplicate() {
+    if [[ $CONNECTED == 2 ]]; then
+	exec xrandr --output "$SCREEN_1" --auto --output "$SCREEN_2" --auto --same-as "$SCREEN_1"
+    elif [[ $CONNECTED == 3 ]]; then
+	exec xrandr --output "$SCREEN_1" --auto --output "$SCREEN_2" --auto --same-as "$SCREEN_1" --output "$SCREEN_3" --auto --same-as "$SCREEN_1"
+    else
+	echo 'Something went wrong!'
+    fi
+}
+
+# For two-screen-configs, it will suffice to switch between the two
+Solo() {
+    # Since the main monitor info is always on the first line, check which
+    # monitor is turned on, by checking for monitor dimensions.
+    SC1=$(xrandr --current | grep " connected" | sed -n 1p | tail -c 2)
+    SC2=$(xrandr --current | grep " connected" | sed -n 2p | tail -c 2)
+    SC3=$(xrandr --current | grep " connected" | sed -n 3p | tail -c 2)
+
+    # If main monitor (SCREEN_1) is turned on, switch it off etc.
+    if [[ $CONNECTED == 2 ]]; then
+	if [[ "$SC1" != ")" ]]; then
+	    exec xrandr --output "$SCREEN_1" --off --output "$SCREEN_2" --auto
+	elif [[ "$SC2" != ")" ]]; then
+	    exec xrandr --output "$SCREEN_2" --off --output "$SCREEN_1" --auto
+	fi
+    elif [[ $CONNECTED == 3 ]]; then
+	if [[ "$SC1" != ")" ]]; then
+	    exec xrandr --output "$SCREEN_1" --off --output "$SCREEN_2" --auto
+	elif [[ "$SC2" == "m" ]]; then
+	    exec xrandr --output "$SCREEN_2" --off --output "$SCREEN_3" --auto
+	elif [[ "$SC3" == "m" ]]; then
+	    exec xrandr --output "$SCREEN_3" --off --output "$SCREEN_1" --auto
+	fi
+    else
+	echo "Something went wrong, turning on main monitor"
+	exec xrandr --output "$SCREEN_2" --off --output "$SCREEN_3" --off --output LVDS1 --auto
+    fi
+}
+
+MainMonitor(){
+    if [[ $CONNECTED == 2 ]]; then
+	exec xrandr --output "$SCREEN_2" --off --output LVDS1 --auto
+    elif [[ $CONNECTED == 3 ]]; then
+	exec xrandr --output "$SCREEN_2" --off --output "$SCREEN_3" --off --output LVDS1 --auto
+    fi
+}
+
+echo "Choose Config:"
+echo "1: Multi-Monitor"
+echo "2: Duplicate"
+echo "3: Single"
+echo "4: Main Monitor"
+read INPUT
+
+if [[ $INPUT == 1 ]] ; then
+    echo $(Extend)
+elif [[ $INPUT == 2 ]] ; then
+    echo $(Duplicate)
+elif [[ $INPUT == 3 ]] ; then
+    echo $(Solo)
+elif [[ $INPUT == 4 ]] ; then
+    echo "Switching to main monitor"
+    echo $(MainMonitor)
+else
+    echo 'Something went wrong! Please type a Number between 1 and 4'
+fi
+
+# Restart lemonbar to fit screensize, and Wallpaper too
+sleep 1;
+pkill lemonbar
+sleep 1;
+nohup mylemonbar > /dev/null &
+sleep 1;
+feh --randomize --bg-fill /home/maurice/Pictures/Wallpapers/*

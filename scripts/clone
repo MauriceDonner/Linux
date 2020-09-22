@@ -1,0 +1,6 @@
+#!/bin/bash
+
+name=$1
+rep=$2
+
+git clone "https://github.com/$1/$2"

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#Check for last screenshot taken
+SCSH=$(ls -la /home/maurice/Pictures/Screenshots/ | tail -1 | awk -F ' ' '{print $9}')
+
+#Check for current directory and Screenshot directory
+CURRENT=$(pwd)
+SCREENSHOTS="/home/maurice/Pictures/Screenshots/"
+
+#If no argument is given, print error message
+if [[ "$1" == '' ]]; then
+    echo "Error: Please specify a filename" ; exit 1
+fi
+
+#Copy the screenshotfile to this Directory
+cd "$SCREENSHOTS"
+echo "Copied $SCSH to $CURRENT/$1"
+exec cp $SCSH "$CURRENT/$1"
