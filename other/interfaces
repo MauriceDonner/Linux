@@ -1,0 +1,23 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug wlp3s0
+iface wlp3s0 inet dhcp
+wpa-debug-level 3
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+# This is an autoconfigured IPv6 interface
+iface wlp3s0 inet6 auto
+
+# The primary network interface
+#allow-hotplug enp0s25
+#iface enp0s25 inet dhcp
+## This is an autoconfigured IPv6 interface
+#iface enp0s25 inet6 auto
