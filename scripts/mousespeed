@@ -1,0 +1,79 @@
+#!/bin/bash
+# Script to change mouse speed. Requirements:
+# xinput (For changing Input Device Properties
+# python (For doing calculations that bash apparently cannot handle)
+#
+# Usage: mousespeed 50 # Sets mouse speed to 50% (recommended)
+
+# Count the number of Mice currently connected
+COUNT=$(xinput --list | grep -c Mouse)
+
+# Find out ID of the first Mouse connected #TODO later add functionality of more than one mouse
+ID=$(xinput --list | grep Mouse | head -n 1 | awk -F 'id=' '{print $2}' | awk -F ' ' '{print $1}')
+
+# Save the Name of the Device
+NAME=$(xinput --list | grep Mouse | head -n 1 | awk -F 'Mouse' '{print $1}' | awk -F '↳ ' '{print $2}')
+
+# Find out ID of the Transformation matrix
+TID=$(xinput --list-props "$ID" | grep Transformation | awk -vRS=")" -vFS="(" '{print $2}' | head -n 1)
+# Some Error Checking
+if [[ "$TID" == "" ]]; then
+	echo "Transformation Matrix of $NAME could not be found"
+	exit 1
+fi
+
+# Grammar is important
+if [ $COUNT == 1 ]; then
+	NOUN="Mouse"
+else
+	NOUN="Mice"
+fi
+
+echo "Found $COUNT $NOUN..." #TODO add multi mouse functionality later
+
+################################# SCRIPT START #################################
+
+# Enter Mouse speed as argument and divide to get the percentage
+SPEED=$1
+# Check, if what has been entered is even a number
+re='^[0-9]+$'
+if ! [[ $SPEED =~ $re ]] ; then
+   echo "Error! Please enter an integer value" >&2; exit 1
+fi
+SPEEDPERC=$(python -c "print($SPEED/100.0)") 
+
+# If no argument is given, exit
+if [[ "$SPEED" == "" ]]; then
+	echo "Error! Argument missing. Please enter the mouse speed in percent."
+	exit 1
+# If Speed is too high or too low, give out a warning, else, just change it
+elif [ $SPEED -gt 200 ]; then
+	echo "Warning! High Speed selected ($SPEED%), are you sure you want to continue? [y/n]"
+	read SURE
+	if [[ "$SURE" == "y" ]]; then
+		xinput --set-prop "$ID" "$TID" "$SPEEDPERC" 0 0 0 "$SPEEDPERC" 0 0 0 1
+		echo "Changed speed of $NAME to $SPEED%"
+	elif [[ "$SURE" == "n" ]]; then
+		echo "Aborting."
+		exit 1
+	else
+		echo "Error! Please enter "y" or "n""
+		exit 1
+	fi
+elif [ $SPEED -lt 25 ]; then
+	echo "Warning! Low Speed selected ($SPEED%), are you sure you want to continue? [y/n]"
+	read SURE
+	if [[ "$SURE" == "y" ]]; then
+		xinput --set-prop "$ID" "$TID" "$SPEEDPERC" 0 0 0 "$SPEEDPERC" 0 0 0 1
+		echo "Changed speed of $NAME to $SPEED%"
+	elif [[ "$SURE" == "n" ]]; then
+		echo "Aborting."
+		exit 1
+	else
+		echo "Error! Please enter 'y' or 'n'"
+		exit 1
+	fi
+else
+	xinput --set-prop "$ID" "$TID" "$SPEEDPERC" 0 0 0 "$SPEEDPERC" 0 0 0 1
+	echo "Changed speed of $NAME to $SPEED%"
+fi
