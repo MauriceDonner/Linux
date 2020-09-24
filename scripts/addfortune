@@ -1,0 +1,16 @@
+#!/bin/bash
+
+STR=$1
+
+printf "Adding the following Fortune to your Library:\n\n"
+printf "$STR\n\n" 
+printf "Continue? [y/n]"
+read INPUT
+if [[ "$INPUT" == "y" ]]; then
+	sudo printf "$STR\n%%\n" >> /usr/share/games/fortunes/fortunes
+elif [[ "$INPUT" == "n" ]]; then
+	echo "Aborting."
+	exit 1
+else
+	echo "Please enter 'y' or 'n'. Aborting."
+fi
