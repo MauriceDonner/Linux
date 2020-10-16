@@ -1,0 +1,10 @@
+#!/bin/bash
+# Program to take a screenshot of a specified area, and move it to
+# the screenshot folder, as well as copying the file to the clipboard
+DIRECTORY="/home/maurice/Pictures/Screenshots/"
+TARGET=$(printf "mv \$f $DIRECTORY")
+scrot -s 'Capture_%m-%d-%y_%H:%M_[$wx$h].png' -e "$TARGET"
+
+
+SCROTNAME=$(ls /home/maurice/Pictures/Screenshots/ | tail -n 1)
+xclip -selection clipboard -t image/png -i $DIRECTORY$SCROTNAME
