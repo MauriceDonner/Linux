@@ -71,9 +71,11 @@ Weather() {
 		else
 			TIME="night"
 		fi
-		WEATHER=$(wget -q -O- "$weatherurl" | sed -n "3p" | awk -F ' ' '{print $NF}' | awk -F ' ' '{print $1}')
-		#TEMPERATURE=$(wget -q -O- "$weatherurl" | sed -n "4p" | awk -F ' ' '{print $5}') # In case other dont work
-		TEMPERATURE=$(wget -q -O- "$weatherurl" | sed -n "4p"  | grep -o -E '[0-9]+' | tail -n 3 | head -n 1)
+
+		CURL=$(wget -q -O- "$weatherurl")
+		WEATHER=$(echo "$CURL" | sed -n "3p" | awk -F ' ' '{print $NF}' | awk -F ' ' '{print $1}')
+		TEMPERATURE=$(echo "$CURL" | sed -n "4p"  | grep -o -E '[0-9]+' | tail -n 3 | head -n 1)
+
 		if [[ "$WEATHER" == "Cloudy" ]]; then
 			weathericon="\ue22b"
 		elif [[ "$WEATHER" == "Overcast" ]]; then
@@ -106,6 +108,8 @@ Weather() {
 			weathericon="\ue234"
 		elif [[ "$WEATHER" == "Sunny" ]] && [[ "$TIME" == "day" ]]; then
 			weathericon="\ue234"
+		elif [[ "$WEATHER" == "Sunny" ]] && [[ "$TIME" == "night" ]]; then
+			weathericon="\ue233"
 		elif [[ "$WEATHER" == "Mist" ]]; then
 			weathericon="\ue235"
 		elif [[ "$WEATHER" == "Haze" ]]; then
@@ -147,10 +151,11 @@ fi
 # {{{ Wifi Status
 
 Wifi() {
-	WIFION=$(cat /proc/net/wireless | tail -1 | awk -F ' ' '{print $10}')
+	
+	WIFION=$(ping google.de -c 1 -i 0.2 | grep received | head -c 1)
 	WIFINAME=$(iwgetid | awk -F '"' '{print $2}')
 	
-	if [ $WIFION != 0 ] && [ "$WIFION" != "crypt" ]; then #TODO Conditional Environment for connection via Ethernet
+	if [ $WIFION == 1 ]; then #TODO Conditional Environment for connection via Ethernet
 
 	    QUALITY=$(cat /proc/net/wireless | awk -F ' ' 'NR==3 {print $3}' | cut -b 1-2)
 	    QPERCENT=$(awk "BEGIN {print 100 * $QUALITY / 70 - 1}" | cut -b 1-2)

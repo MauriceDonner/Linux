@@ -88,6 +88,7 @@ elif [[ $INPUT == 4 ]] ; then
     echo $(MainMonitor)
 else
     echo 'Something went wrong! Please type a Number between 1 and 4'
+    exit 1
 fi
 
 # Restart lemonbar to fit screensize, and Wallpaper too
