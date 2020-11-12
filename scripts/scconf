@@ -79,6 +79,19 @@ read INPUT
 
 if [[ $INPUT == 1 ]] ; then
     echo $(Extend)
+    echo "Tell me the position of the second monitor (l/r/a/b)"
+    read INPUT2
+    if [[ "$INPUT2" == "l" ]]; then
+	    exec xrandr --output "$SCREEN_2" --left-of LVDS1
+    elif [[ "$INPUT2" == "l" ]]; then
+	    exec xrandr --output "$SCREEN_2" --right-of LVDS1
+    elif [[ "$INPUT2" == "l" ]]; then
+	    exec xrandr --output "$SCREEN_2" --above LVDS1
+    elif [[ "$INPUT2" == "l" ]]; then
+	    exec xrandr --output "$SCREEN_2" --below LVDS1
+    else
+	    echo "Positional argument not understood, chooses default setting (right)"
+    fi
 elif [[ $INPUT == 2 ]] ; then
     echo $(Duplicate)
 elif [[ $INPUT == 3 ]] ; then

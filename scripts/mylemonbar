@@ -126,25 +126,26 @@ Weather() {
 
 # {{{ Songtitle
 
-Spotify() {
-# if spotify is started
-if [ "$(pidof spotify)" ] ; then
-    # status can be: Playing, Paused or Stopped
-    status=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus'|egrep -A 1 "string"|cut -b 26-|cut -d '"' -f 1|egrep -v ^$`
-    artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$`
-    album=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "album"|egrep -v "album"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
-    title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+# Commented until working again
+#Spotify() {
+## if spotify is started
+#if [ "$(pidof spotify)" ] ; then
+#    # status can be: Playing, Paused or Stopped
+#    status=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus'|egrep -A 1 "string"|cut -b 26-|cut -d '"' -f 1|egrep -v ^$`
+#    artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$`
+#    album=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "album"|egrep -v "album"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+#    title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
+#
+#	SONGNAME="$artist - $title"
+#
+#	if [ $status == 'Playing' ] ; then
+#		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
+#	elif [ $status == 'Paused' ] ; then
+#		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
+#	fi
+#fi
 
-	SONGNAME="$artist - $title"
-
-	if [ $status == 'Playing' ] ; then
-		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
-	elif [ $status == 'Paused' ] ; then
-		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
-	fi
-fi
-
-}
+#}
 
 # }}}
 
@@ -155,20 +156,26 @@ Wifi() {
 	WIFION=$(ping google.de -c 1 -i 0.2 | grep received | head -c 1)
 	WIFINAME=$(iwgetid | awk -F '"' '{print $2}')
 	
-	if [ $WIFION == 1 ]; then #TODO Conditional Environment for connection via Ethernet
+	if [ $WIFION == 1 ]; then
 
-	    QUALITY=$(cat /proc/net/wireless | awk -F ' ' 'NR==3 {print $3}' | cut -b 1-2)
-	    QPERCENT=$(awk "BEGIN {print 100 * $QUALITY / 70 - 1}" | cut -b 1-2)
-		if [[ "$QUALITY" > 50 ]] ; then
-		    wifiicon="\ue222"
-		elif [[ "$QUALITY" > 25 ]] ; then
-		    wifiicon="\ue221"
-		elif [[ "$QUALITY" > 0 ]] ; then
-		    wifiicon="\ue220"
-		else
-		    wifiicon="\ue21f"
-		fi 
+	    DEVICE=$(cat /proc/net/wireless | tail -n 1 | awk -F ':' '{print $1}')
+	    if [ "$DEVICE" == "wlp3s0" ]; then 
+		QUALITY=$(cat /proc/net/wireless | awk -F ' ' 'NR==3 {print $3}' | cut -b 1-2)
+		QPERCENT=$(awk "BEGIN {print 100 * $QUALITY / 70 - 1}" | cut -b 1-2)
+		    if [[ "$QUALITY" > 50 ]] ; then
+			wifiicon="\ue222"
+		    elif [[ "$QUALITY" > 25 ]] ; then
+			wifiicon="\ue221"
+		    elif [[ "$QUALITY" > 0 ]] ; then
+			wifiicon="\ue220"
+		    else
+			wifiicon="\ue21f"
+		    fi 
+		    echo -e "%{T2}$wifiicon %{T1}$WIFINAME"
+	    elif [ "$DEVICE" == "eth0" ]; then
+		wifiicon="\ue2ff"
 		echo -e "%{T2}$wifiicon %{T1}$WIFINAME"
+	    fi
 
 	else
 	    echo -e "%{T2}\ue21f %{T1} Not connected"

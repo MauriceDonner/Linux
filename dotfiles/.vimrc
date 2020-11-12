@@ -24,6 +24,7 @@ if has("clipboard")
 endif
 " paste from clipboard
 vnoremap <C-c> :w !pbcopy<CR><CR> noremap <C-v> :r !pbpaste<CR><CR>
+
 " }}}
 
 " {{{ Colors
@@ -55,6 +56,21 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-W> :q <CR>
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MULTIPURPOSE TAB KEY
+" Indent if we're at the beginning of a line. Else, do completion.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
+
 "}}}
 
 " {{{ Plugin Manager ---
@@ -77,6 +93,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
 Plug 'powerline/powerline'
+Plug 'vim-scripts/AutoComplPop'
 
 call plug#end()
 
@@ -110,7 +127,7 @@ let g:quicktex_tex = {
     \'fold': "% {{{ <+++>\<CR><++>\<CR>% }}}",
     \'lst' : "\\begin{lstlisting}\<CR><+++>\<CR>\\end{lstlisting}",
     \'frm' : "\\begin{frame}{<+++>}\<CR><++>\<CR>\\end{frame}",
-    \'minip': "\\begin{minipage}{<+++>}\<CR><++>\<CR>\\end{minipage}",
+    \'minip': "\\begin{minipage}{<+++>\\textwidth}\<CR><++>\<CR>\\end{minipage}",
     \'verb': '\verb`<+++>` <++>',
     \'sf'  : '\textsf{<+++>} <++>',
     \}
@@ -137,26 +154,61 @@ let g:quicktex_math = {
     \'alpha': '\alpha <+++>',
     \'beta' : '\beta <+++>',
     \'gamma': '\gamma <+++>',
+    \'delta': '\delta <+++>',
     \'Delta': '\Delta <+++>',
     \'epsilon': '\varepsilon <+++>',
-    \'zeta' : '\zeta <+++>',
     \'eta'  : '\eta <+++>',
     \'theta': '\theta <+++>',
     \'lambda': '\lambda <+++>',
     \'mu'   : '\mu <+++>',
+    \'nu'   : '\nu <+++>',
+    \'zeta' : '\zeta <+++>',
+    \'pi'   : '\pi <+++>',
+    \'rho'  : '\rho <+++>',
     \'phi'  : '\varphi <+++>',
     \'psi'  : '\psi <+++>',
-    \'pi'   : '\pi <+++>',
     \'sig'  : '\sigma <+++>',
     \'tau'  : '\tau <+++>',
     \'chi'  : '\chi <+++>',
     \'del'  : '\partial <+++>',
     \'per'  : '\per <+++>',
     \'deg'  : '^{\circ} <+++>',
-    \'times': '\cdot <+++>',
+    \'times': '\cdot <+++>', 
     \'array': "\\begin{array}{lcr}\<CR><+++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \<CR>\\end{array}\<CR><++>",
     \'mat'  : "\\left(\<CR>\\begin{matrix}\<CR><+++> & <++> \\\\ \<CR><++> & <++> \<CR>\\end{matrix}\<CR>\\right)\<CR><++>",
-    \'mat3'  : "\\left(\<CR>\\begin{matrix}\<CR><+++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \<CR>\\end{matrix}\<CR>\\right)\<CR><++>"
+    \'mat3'  : "\\left(\<CR>\\begin{matrix}\<CR><+++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \<CR>\\end{matrix}\<CR>\\right)\<CR><++>",
+    \'centi' : '\centi <+++>',
+    \'milli': '\milli <+++>',
+    \'micro': '\micro <+++>',
+    \'nano' : '\nano <+++>',
+    \'pico' : '\pico <+++>',
+    \'femto': '\femto <+++>',
+    \'kilo' : '\kilo <+++>',
+    \'mega' : '\mega <+++>',
+    \'giga' : '\giga <+++>',
+    \'tera' : '\tera <+++>',
+    \'meter': '\meter <+++>',
+    \'second': '\second <+++>',
+    \'gram' : '\gram <+++>',
+    \'ev'   : '\electronvolt <+++>',
+    \'bar'  : '\bar <+++>',
+    \'joule': '\joule <+++>',
+    \'kelvin': '\kelvin <+++>',
+    \'mm'   : '\milli\meter <+++>',
+    \'mum'  : '\micro\meter <+++>',
+    \'nm'   : '\nano\meter <+++>',
+    \'pm'   : '\pico\meter <+++>',
+    \'fm'   : '\femto\meter <+++>',
+    \'km'   : '\kilo\meter <+++>',
+    \'ms'   : '\milli\second <+++>',
+    \'mus'  : '\micro\second <+++>',
+    \'ns'   : '\nano\second <+++>',
+    \'ps'   : '\pico\second <+++>',
+    \'fs'   : '\femto\second <+++>',
+    \'kev'  : '\kilo\electronvolt <+++>',
+    \'Mev'  : '\mega\electronvolt <+++>',
+    \'Gev'  : '\giga\electronvolt <+++>',
+    \'Tev'  : '\tera\electronvolt <+++>'
     \}
 
 let g:Latex_Box_latemk_async=0
@@ -170,3 +222,4 @@ let g:LatexBox_latexmk_options="-pdf -xelatex"
 "set  rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
 "set laststatus=2
 "set t_Co=256
+"

@@ -1,4 +1,4 @@
-PWD /home/maurice/Documents/Stuff/Debian
+PWD /home/maurice/Documents/Linux/Debian
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
