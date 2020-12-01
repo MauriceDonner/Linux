@@ -22,6 +22,7 @@ if [ -d "$HOME/bin" ] ; then
 fi
 
 export PATH=$PATH:/opt/
+export PATH=$PATH:/home/maurice/Documents/Linux/scripts/lemonbar_scripts/
 export PATH=$PATH:/opt/minecraft-launcher/
 export PATH=$PATH:/home/maurice/.local/bin
 #export PATH=$PATH:/home/maurice/.scripts/

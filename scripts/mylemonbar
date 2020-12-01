@@ -10,8 +10,6 @@ font1="-*-gohufont-medium-*-*-*-11-*-*-*-*-*-*-*"
 font2="-wuncon-siji-medium-r-normal--10-100-75-75-c-80-iso10646-1"
 clockicon="%{T2}\ue015"
 dateicon="%{T2}\ue26a"
-weatherurl='http://wttr.in/heidelberg'
-
 
 # }}}
 
@@ -60,66 +58,8 @@ Clock() {
 # {{{ Weather
 
 Weather() {
-
-	WIFION=$(ping google.de -c 1 -i 0.2 | grep received | head -c 1)
-
-	if [ $WIFION == 1 ]; then # This prevents the weather to get stuck when no connection
-
-		HOUR=$(date "+%H")
-		if [ "$HOUR" -gt 7 ] && [ "$HOUR" -lt 20 ]; then
-			TIME="day"
-		else
-			TIME="night"
-		fi
-
-		CURL=$(wget -q -O- "$weatherurl")
-		WEATHER=$(echo "$CURL" | sed -n "3p" | awk -F ' ' '{print $NF}' | awk -F ' ' '{print $1}')
-		TEMPERATURE=$(echo "$CURL" | sed -n "4p"  | grep -o -E '[0-9]+' | tail -n 3 | head -n 1)
-
-		if [[ "$WEATHER" == "Cloudy" ]]; then
-			weathericon="\ue22b"
-		elif [[ "$WEATHER" == "Overcast" ]]; then
-			weathericon="\ue22b"
-		elif [[ "$WEATHER" == "Storm" ]]; then
-			weathericon="\ue22c"
-		elif [[ "$WEATHER" == "Rain" ]]; then
-			weathericon="\ue22d"
-		elif [[ "$WEATHER" == "Shower" ]]; then
-			weathericon="\ue22d"
-		elif [[ "$WEATHER" == "shower" ]]; then
-			weathericon="\ue22d"
-		elif [[ "$WEATHER" == "rain" ]]; then
-			weathericon="\ue22d"
-		elif [[ "$WEATHER" == "Snow" ]]; then
-			weathericon="\ue22e"
-		elif [[ "$WEATHER" == "snow" ]]; then
-			weathericon="\ue22e"
-		elif [[ "$WEATHER" == "Drizzle" ]]; then
-			weathericon="\ue22f"
-		elif [[ "$WEATHER" == "drizzle" ]]; then
-			weathericon="\ue230"
-		elif [[ "$WEATHER" == "cloudy" ]] && [[ "$TIME" == "day" ]]; then
-			weathericon="\ue231"
-		elif [[ "$WEATHER" == "cloudy" ]] && [[ "$TIME" == "night" ]]; then
-			weathericon="\ue232"
-		elif [[ "$WEATHER" == "Clear" ]] && [[ "$TIME" == "night" ]]; then
-			weathericon="\ue233"
-		elif [[ "$WEATHER" == "Clear" ]] && [[ "$TIME" == "day" ]]; then
-			weathericon="\ue234"
-		elif [[ "$WEATHER" == "Sunny" ]] && [[ "$TIME" == "day" ]]; then
-			weathericon="\ue234"
-		elif [[ "$WEATHER" == "Sunny" ]] && [[ "$TIME" == "night" ]]; then
-			weathericon="\ue233"
-		elif [[ "$WEATHER" == "Mist" ]]; then
-			weathericon="\ue235"
-		elif [[ "$WEATHER" == "Haze" ]]; then
-			weathericon="\ue235"
-		else
-			weathericon="\ue0a4"
-		fi
-
-		echo -e "$weathericon $TEMPERATURE°C %{F-}%{B-}"
-	fi
+WEATHER=$(cat /home/maurice/Documents/Linux/scripts/lemonbar_scripts/weather.out)
+echo -e "$WEATHER"
 }
 
 # }}}
@@ -153,7 +93,7 @@ Weather() {
 
 Wifi() {
 	
-	WIFION=$(ping google.de -c 1 -i 0.2 | grep received | head -c 1)
+	WIFION=$(ping google.de -c 1 -Q 1 -t 60 | grep received | awk -F " received" '{print $1}' | tail -c 2 | head -c 1)
 	WIFINAME=$(iwgetid | awk -F '"' '{print $2}')
 	
 	if [ $WIFION == 1 ]; then
@@ -250,7 +190,7 @@ while true; do
 
 	status="%{l} $(Workspace)"	
 	status="$status %{c} $(Clock)$(Weather)"
-	status="$status %{r} $(Spotify) $(Wifi) \ $(Volume) \ $(Battery)" 
+	status="$status %{r} $(Wifi) \ $(Volume) \ $(Battery)" 
 	echo $status
         sleep 1;
 

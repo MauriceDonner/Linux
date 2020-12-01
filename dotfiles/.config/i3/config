@@ -153,6 +153,8 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+#Lemonbar scripts
+exec weather
 exec xset fp+ /usr/share/fonts/ && mylemonbar 
 
 #Keyboard bindings Function Keys
@@ -170,12 +172,14 @@ bindsym XF86AudioPrev exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2
 #Keyboard Bindings General
 bindsym $mod+c exec chromium --start-fullscreen
 bindsym $mod+t exec Telegram
+bindsym $mod+Shift+t exec thunderbird
 #bindsym $mod+Shift+t exec Telegram -many -workdir ~/.telegram2ndprofile
 bindsym $mod+p exec urxvt -e ipython3
 bindsym $mod+i exec urxvt -e ranger
 bindsym $mod+s exec spotify
-bindsym --release $mod+Shift+s exec scrot -s 'Capture_%m-%d-%y_%H:%M_[$wx$h].png' -e 'mv $f /home/maurice/Pictures/Screenshots/'
-bindsym --release Print exec scrot -s 'Capture_%m-%d-%y_%H:%M_[$wx$h].png' -e 'mv $f /home/maurice/Pictures/Screenshots/'
+#OLD bindsym --release $mod+Shift+s exec scrot -s 'Capture_%m-%d-%y_%H:%M_[$wx$h].png' -e 'mv $f /home/maurice/Pictures/Screenshots/'
+bindsym --release $mod+Shift+s exec screenshot
+bindsym --release Print exec screenshot
 bindsym $mod+x exec xfontsel -sample "The Quick Brown Fox Jumps Over The Lazy Dog | the quick brown fox jumps over the lazy dog"
 #bindsym $mod+Shift+p exec panning
 #bindsym $mod+b exec wallpaper
@@ -186,15 +190,19 @@ for_window [instance="dropdown"] floating enable sticky enable;
 for_window [instance="dropdown"] resize set 500 250
 for_window [instance="dropdown"] move position 433px 22px
 
-#Color Borders
-client.focused          #000000 #285577 #ffffff #2e9ef4   #C65087
+#Color Borders		border  backgr. text    indicator child_border
+client.focused          #000000 #c65087 #ffffff #2e9ef4   #C65087
 client.focused_inactive #000000 #5f676a #ffffff #484e50   #000000
 client.unfocused        #000000 #222222 #888888 #292d2e   #000000
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.placeholder      #000000 #000000 #ffffff #000000   #0c0c0c
 
 hide_edge_borders smart 
 exec --no-startup-id feh --randomize --bg-fill /home/maurice/Pictures/Wallpapers/*
 new_window pixel 2
+mouse_warping output
 
 #For Special characters
 exec xmodmap .Xmodmap
+
+#Open Standard Workspace
+exec i3-resurrect restore -p default
