@@ -83,11 +83,11 @@ if [[ $INPUT == 1 ]] ; then
     read INPUT2
     if [[ "$INPUT2" == "l" ]]; then
 	    exec xrandr --output "$SCREEN_2" --left-of LVDS1
-    elif [[ "$INPUT2" == "l" ]]; then
+    elif [[ "$INPUT2" == "r" ]]; then
 	    exec xrandr --output "$SCREEN_2" --right-of LVDS1
-    elif [[ "$INPUT2" == "l" ]]; then
+    elif [[ "$INPUT2" == "a" ]]; then
 	    exec xrandr --output "$SCREEN_2" --above LVDS1
-    elif [[ "$INPUT2" == "l" ]]; then
+    elif [[ "$INPUT2" == "b" ]]; then
 	    exec xrandr --output "$SCREEN_2" --below LVDS1
     else
 	    echo "Positional argument not understood, chooses default setting (right)"
