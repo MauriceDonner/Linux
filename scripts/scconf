@@ -105,9 +105,9 @@ else
 fi
 
 # Restart lemonbar to fit screensize, and Wallpaper too
-sleep 1;
+sleep 0.5;
 pkill lemonbar
-sleep 1;
+sleep 0.5;
 nohup mylemonbar > /dev/null &
-sleep 1;
+sleep 0.5;
 feh --randomize --bg-fill /home/maurice/Pictures/Wallpapers/*
