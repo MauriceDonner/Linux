@@ -53,8 +53,9 @@ nnoremap <C-O> :resize +10 <CR>
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
+"nnoremap <C-K> <C-W><C-K>
 nnoremap <C-W> :q <CR>
+nnoremap <C-K> I<backspace><space><ESC>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -93,7 +94,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
 Plug 'powerline/powerline'
-Plug 'vim-scripts/AutoComplPop'
+"Plug 'vim-scripts/AutoComplPop'
 
 call plug#end()
 
@@ -103,7 +104,7 @@ call plug#end()
 
 let g:quicktex_tex = {
     \' '   : "\<ESC>:call search('<+.*+>')\<CR>\"_c/+>/e\<CR>",
-    \'m'   : '\( <+++> \) <++>',
+    \'m'   : '\( <+++> \)<++>',
     \'M'   : "\\[ \<CR><+++>\<CR>\\]\<CR><++>",
     \'prf' : "\\begin{proof}\<CR><+++>\<CR>\\end{proof}",
     \'sec' : '\section{<+++>} <++>', 
@@ -113,9 +114,10 @@ let g:quicktex_tex = {
     \'bf'  : '\textbf{<+++>} <++>',
     \'ita'  : '\textit{<+++>} <++>',
     \'cod' : '\texttt{<+++>} <++>',
-    \'incl': "\\includegraphics[width=<+++>]{<++>}\<CR>\\caption{<++>}",
+    \'incl': "\\includegraphics[width=.<+++>\\textwidth]{<++>}",
+    \'sincl': "\\subcaptionbox{\\ }[.<+++>\\textwidth]\<CR>{\\includegraphics[width=.<++>\\textwidth]{<++>}}\<CR><++>",
     \'tabl': "\\begin{table}[H]\<CR>\\centering\<CR><+++>\<CR>\\end{table}",
-    \'fig' : "\\begin{figure}[H]\<CR>\\centering\<CR><+++>\<CR>\\end{figure}",
+    \'fig' : "\\begin{figure}[H]\<CR>\\centering\<CR><+++>\<CR>\\caption{<++>}\<CR>\\end{figure}",
     \'sfig': "\\begin{subfigure}[b]{0.5\\linewidth}\<CR>\\centering\<CR><+++> \<CR>\\end{subfigure}",
     \'tabular': "\\begin{tabular}{lcc}\<CR>\\toprule\<CR><+++> & <++> & <++> \\\\ \\midrule\<CR><++> & <++> & <++> \<CR>\\bottomrule\<CR>\\end{tabular}",
     \'enu' : "\\begin{enumerate}\<CR>\\item <+++>\<CR>\\end{enumerate}",
@@ -146,10 +148,10 @@ let g:quicktex_math = {
     \'sqrt' : '\sqrt{<+++>} <++>',
     \'sum'  : '\sum_{<+++>} <++>',
     \'exp'  : '\exp \left( <+++> \right) <++>',
-    \'sin'  : '\sin \big( <+++> \big) <++>',
-    \'cos'  : '\cos \big( <+++> \big) <++>',
-    \'tan'  : '\tan \big( <+++> \big) <++>',
-    \'log'  : '\log \big( <+++> \big) <++>',
+    \'sin'  : '\sin \left( <+++> \right) <++>',
+    \'cos'  : '\cos \left( <+++> \right) <++>',
+    \'tan'  : '\tan \left( <+++> \right) <++>',
+    \'log'  : '\log \left( <+++> \right) <++>',
     \'ln'   : '\ln \big( <+++> \big) <++>',
     \'alpha': '\alpha <+++>',
     \'beta' : '\beta <+++>',
@@ -175,7 +177,7 @@ let g:quicktex_math = {
     \'deg'  : '^{\circ} <+++>',
     \'times': '\cdot <+++>', 
     \'array': "\\begin{array}{lcr}\<CR><+++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \<CR>\\end{array}\<CR><++>",
-    \'mat'  : "\\left(\<CR>\\begin{matrix}\<CR><+++> & <++> \\\\ \<CR><++> & <++> \<CR>\\end{matrix}\<CR>\\right)\<CR><++>",
+    \'mat'  : "\\left(\\begin{matrix}<+++> & <++> \\\\ <++> & <++> \\end{matrix}\\right)\<CR><++>",
     \'mat3'  : "\\left(\<CR>\\begin{matrix}\<CR><+++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \\\\ \<CR><++> & <++> & <++> \<CR>\\end{matrix}\<CR>\\right)\<CR><++>",
     \'centi' : '\centi <+++>',
     \'milli': '\milli <+++>',
