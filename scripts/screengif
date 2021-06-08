@@ -1,4 +1,8 @@
 #!/bin/bash
+#Define a screen area and record a GIF of that area for 10 seconds
+#Do not move your mouse in between running the script and choosing the area,
+#as the curser position at the moment of execution defines the upper left position
+#of the recording area. Moving the mouse will shift your recording area!
 
 eval $(xdotool getmouselocation --shell) # Stores Variables in $X $Y
 
