@@ -1,4 +1,5 @@
 #!/bin/bash
+# !!! Requrements: Scrot | xdotool | byzanz !!!
 #Define a screen area and record a GIF of that area for 10 seconds
 #Do not move your mouse in between running the script and choosing the area,
 #as the curser position at the moment of execution defines the upper left position
