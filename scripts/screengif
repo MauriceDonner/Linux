@@ -1,0 +1,20 @@
+#!/bin/bash
+
+eval $(xdotool getmouselocation --shell) # Stores Variables in $X $Y
+
+DIRECTORY="/home/maurice/Pictures/Screenshots/" # Screenshot Directory
+TARGET=$(printf "mv \$f $DIRECTORY")		# Move File to Directory (scrot needs this)
+scrot -s 'Capture_%m-%d-%y_%H:%M_[_$w_$h_].png' -e "$TARGET"		# Take Screen Area
+
+# Save Filename without File extension
+SCROTNAME=$(ls /home/maurice/Pictures/Screenshots/ | tail -n 1 | rev | cut -c 5- | rev)
+
+# Remove Screenshot
+rm "$DIRECTORY/$SCROTNAME.png"
+
+# Use Dimensions to define recording area
+SIZEX=$(echo $SCROTNAME | awk -F '_' '{print $5}')
+SIZEY=$(echo $SCROTNAME | awk -F '_' '{print $6}')
+
+# Execute Screen Recording
+exec byzanz-record -x $X -y $Y -w $SIZEX -h $SIZEY -c "$DIRECTORY/$SCROTNAME.gif"
