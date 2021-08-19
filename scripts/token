@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "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" | xclip -sel clip
+
+sleep .5
+xdotool key ctrl+alt+v
+sleep .5
+xdotool key ctrl+alt+v
