@@ -171,7 +171,7 @@ bindsym XF86AudioNext exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2
 bindsym XF86AudioPrev exec dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
 
 #Keyboard Bindings General
-bindsym $mod+c exec chromium --start-fullscreen
+bindsym $mod+c exec google-chrome
 bindsym $mod+t exec Telegram
 bindsym $mod+Shift+t exec thunderbird
 bindsym $mod+Shift+i exec nomacs
