@@ -32,7 +32,7 @@ vnoremap <C-c> :w !pbcopy<CR><CR> noremap <C-v> :r !pbpaste<CR><CR>
 
 colorscheme desert
 set colorcolumn=80
-highlight colorcolumn ctermbg=0
+highlight colorcolumn ctermbg=15
 let &colorcolumn=join(range(81,999),",")
 
 " }}}
@@ -46,6 +46,7 @@ inoremap <S-Tab> <C-N>
 " map <C-T> :w <bar> :Latexmk <CR>
 autocmd FileType python map <buffer> <C-T> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 autocmd FileType tex map <buffer> <C-T> :w<CR>:exec ':Latexmk'<CR>
+autocmd filetype cpp nnoremap <buffer><C-T> :!g++ % -ggdb -o %:r && ./%:r<CR>
 map - dd p
 nnoremap <C-U> :vsplit <CR>
 nnoremap <C-I> :split <CR>
