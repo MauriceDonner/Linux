@@ -9,6 +9,7 @@ set tabstop=8
 set softtabstop=4
 set shiftwidth=4
 set noexpandtab
+set hlsearch
 
 filetype plugin on
 set foldenable
@@ -53,9 +54,9 @@ nnoremap <C-O> :resize +10 <CR>
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-J> <C-W><C-J>
-"nnoremap <C-K> <C-W><C-K>
+nnoremap <C-K> <C-W><C-K>
 nnoremap <C-W> :q <CR>
-nnoremap <C-K> I<backspace><space><ESC>
+nnoremap <CR> :noh<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -139,7 +140,7 @@ let g:quicktex_math = {
     \'cal'  : '\mathcal{<+++>} <++> ',
     \'set'  : '\{ <+++> \} <++>',
     \'frac' : '\frac{<+++>}{<++>} <++>',
-    \'si'   : '\ \si{<+++>} <++>',
+    \'si'   : '\si{<+++>} <++>',
     \'bf'   : '\mathbf{<+++>} <++>',
     \'text'  : '\text{<+++>} <++>',
     \'cod'  : '\texttt{<+++>} <++>',
@@ -153,6 +154,7 @@ let g:quicktex_math = {
     \'tan'  : '\tan \left( <+++> \right) <++>',
     \'log'  : '\log \left( <+++> \right) <++>',
     \'ln'   : '\ln \big( <+++> \big) <++>',
+    \'and'  : '\quad \text{and} \quad <+++>',
     \'alpha': '\alpha <+++>',
     \'beta' : '\beta <+++>',
     \'gamma': '\gamma <+++>',
@@ -173,6 +175,7 @@ let g:quicktex_math = {
     \'tau'  : '\tau <+++>',
     \'chi'  : '\chi <+++>',
     \'del'  : '\partial <+++>',
+    \'omega': '\omega <+++>',
     \'per'  : '\per <+++>',
     \'deg'  : '^{\circ} <+++>',
     \'times': '\cdot <+++>', 
@@ -196,6 +199,7 @@ let g:quicktex_math = {
     \'bar'  : '\bar <+++>',
     \'joule': '\joule <+++>',
     \'kelvin': '\kelvin <+++>',
+    \'hz'   : '\hertz <+++>',
     \'mm'   : '\milli\meter <+++>',
     \'mum'  : '\micro\meter <+++>',
     \'nm'   : '\nano\meter <+++>',

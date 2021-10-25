@@ -1,0 +1,13 @@
+#!/bin/bash
+
+ACTIVE=$(pacmd list-cards | grep active | awk -F ':' '{print $3}' | awk -F '>' '{print $1}')
+
+if [[ "$ACTIVE" == "analog-stereo" ]]; then
+	pactl set-card-profile 0 output:hdmi-stereo
+	NEW="hdmi-stereo"
+else
+	pactl set-card-profile 0 output:analog-stereo
+	NEW="analog-stereo"
+fi
+
+echo "Switched from $ACTIVE to $NEW"
