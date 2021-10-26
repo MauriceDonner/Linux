@@ -21,17 +21,15 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+xset +fp /home/maurice/.fonts
+xset fp rehash
+
 export PATH=$PATH:/opt/
 export PATH=$PATH:/home/maurice/Documents/Linux/scripts/lemonbar_scripts/
-export PATH=$PATH:/opt/minecraft-launcher/
-export PATH=$PATH:/home/maurice/.local/bin
-#export PATH=$PATH:/home/maurice/.scripts/
-#export PATH=$PATH:/home/maurice/Documents/Programs/
+#export PATH=$PATH:/opt/minecraft-launcher/
 
 # Start xServer
 if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
     exec startx
 fi
 
-xset +fp /home/maurice/.fonts
-xset fp rehash
