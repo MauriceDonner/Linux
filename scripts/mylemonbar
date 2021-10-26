@@ -66,26 +66,25 @@ echo -e "$WEATHER"
 
 # {{{ Songtitle
 
-# Commented until working again
-#Spotify() {
-## if spotify is started
-#if [ "$(pidof spotify)" ] ; then
-#    # status can be: Playing, Paused or Stopped
-#    status=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus'|egrep -A 1 "string"|cut -b 26-|cut -d '"' -f 1|egrep -v ^$`
-#    artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 2 "artist"|egrep -v "artist"|egrep -v "array"|cut -b 27-|cut -d '"' -f 1|egrep -v ^$`
-#    album=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "album"|egrep -v "album"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
-#    title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'|egrep -A 1 "title"|egrep -v "title"|cut -b 44-|cut -d '"' -f 1|egrep -v ^$`
-#
-#	SONGNAME="$artist - $title"
-#
-#	if [ $status == 'Playing' ] ; then
-#		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
-#	elif [ $status == 'Paused' ] ; then
-#		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
-#	fi
-#fi
+ Commented until working again
+Spotify() {
+# if spotify is started
+if [ "$(pidof spotify)" ] ; then
+    # status can be: Playing, Paused or Stopped
+    status=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus'|egrep -A 1 "string"|cut -b 26-|cut -d '"' -f 1|egrep -v ^$`
+    artist=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | sed -n '/artist/{n;n;p}' | cut -d '"' -f 2`
+    title=`dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | sed -n '/title/{n;p}' | cut -d '"' -f 2`
 
-#}
+	SONGNAME="$artist - $title"
+
+	if [ $status == 'Playing' ] ; then
+		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
+	elif [ $status == 'Paused' ] ; then
+		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
+	fi
+fi
+
+}
 
 # }}}
 
@@ -129,6 +128,7 @@ Wifi() {
 Volume() {
 	VOLPERC=$(amixer sget Master | grep 'Left:' | awk -F'[][]' '{print $2}')
 	SPEAKER=$(amixer sget Master | grep 'Left:' | awk -F'[][]' '{print $4}')
+	MICMUTE=$(pacmd list-sources | grep muted | tail -n 1 | awk -F ': ' '{print $2}')
 	if [[ "$SPEAKER" == "off" ]] ; then
 		speakericon="\ue04f"
 	elif [[ "$VOLPERC" < 50 ]] ; then
@@ -136,8 +136,11 @@ Volume() {
 	elif [[ "$VOLPERC" > 49 ]] ; then
 		speakericon="%{T2}\ue050"
 	fi
+	if [[ "$MICMUTE" == "yes" ]] ; then
+		micmuteicon="\ue04c Muted"
+	fi
 
-	echo -e "$speakericon $VOLPERC"
+	echo -e "$speakericon $VOLPERC $micmuteicon"
 }
 
 # }}}
@@ -190,7 +193,7 @@ while true; do
 
 	status="%{l} $(Workspace)"	
 	status="$status %{c} $(Clock)$(Weather)"
-	status="$status %{r} $(Wifi) \ $(Volume) \ $(Battery)" 
+	status="$status %{r} $(Spotify) $(Wifi) \ $(Volume) \ $(Battery)" 
 	echo $status
         sleep 1;
 
