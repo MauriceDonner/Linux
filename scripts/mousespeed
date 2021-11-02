@@ -40,7 +40,7 @@ re='^[0-9]+$'
 if ! [[ $SPEED =~ $re ]] ; then
    echo "Error! Please enter an integer value" >&2; exit 1
 fi
-SPEEDPERC=$(python -c "print($SPEED/100.0)") 
+SPEEDPERC=$(python3 -c "print($SPEED/100.0)") 
 
 # If no argument is given, exit
 if [[ "$SPEED" == "" ]]; then
