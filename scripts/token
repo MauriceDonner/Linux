@@ -1,0 +1,9 @@
+#!/bin/bash
+
+token="ENTER_TOKEN_HERE"
+
+echo "$token" | xclip -selection clipboard
+
+sleep .5;
+xdotool key ctrl+alt+v
+xdotool key Return
