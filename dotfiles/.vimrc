@@ -78,27 +78,28 @@ inoremap <s-tab> <c-n>
 
 " {{{ Plugin Manager ---
 
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
+ if empty(glob('~/.vim/autoload/plug.vim'))
+   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+ endif
 
 " }}}
 
 " {{{ GitHub Plugins
 
-call plug#begin()
-
-Plug 'LaTeX-Box-Team/LaTeX-Box'
-Plug 'brennier/quicktex'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-eunuch'
-Plug 'powerline/powerline'
-"Plug 'vim-scripts/AutoComplPop'
-
-call plug#end()
+ call plug#begin()
+ 
+ Plug 'LaTeX-Box-Team/LaTeX-Box'
+ Plug 'brennier/quicktex'
+ Plug 'tpope/vim-fugitive'
+ Plug 'tpope/vim-surround'
+ Plug 'tpope/vim-eunuch'
+ Plug 'powerline/powerline'
+ "Plug 'prabirshrestha/vim-lsp' # For error messages in C++
+ "Plug 'vim-scripts/AutoComplPop'
+ 
+ call plug#end()
 
 " }}}
 
@@ -141,7 +142,7 @@ let g:quicktex_math = {
     \'cal'  : '\mathcal{<+++>} <++> ',
     \'set'  : '\{ <+++> \} <++>',
     \'frac' : '\frac{<+++>}{<++>} <++>',
-    \'si'   : '\si{<+++>} <++>',
+    \'si'   : '\SI{<+++>}{<++>} <++>',
     \'bf'   : '\mathbf{<+++>} <++>',
     \'text'  : '\text{<+++>} <++>',
     \'cod'  : '\texttt{<+++>} <++>',
@@ -224,6 +225,28 @@ let g:tex_flavor='latex'
 let g:LatexBox_quickfix=2
 let g:LatexBox_latexmk_options="-pdf -xelatex"
 
+" }}}
+
+" {{{ lsp
+" Taken from
+" https://jonasdevlieghere.com/vim-lsp-clangd/
+if executable('clangd')
+    augroup lsp_clangd
+        autocmd!
+        autocmd User lsp_setup call lsp#register_server({
+                    \ 'name': 'clangd',
+                    \ 'cmd': {server_info->['clangd']},
+                    \ 'whitelist': ['c', 'C', 'cxx', 'h', 'cpp', 'objc', 'objcpp'],
+                    \ })
+        autocmd FileType h setlocal omnifunc=lsp#complete
+        autocmd FileType c setlocal omnifunc=lsp#complete
+        autocmd FileType C setlocal omnifunc=lsp#complete
+        autocmd FileType cpp setlocal omnifunc=lsp#complete
+        autocmd FileType cxx setlocal omnifunc=lsp#complete
+        autocmd FileType objc setlocal omnifunc=lsp#complete
+        autocmd FileType objcpp setlocal omnifunc=lsp#complete
+    augroup end
+endif
 " }}}
 
 "set  rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
