@@ -3,10 +3,10 @@
 ACTIVE=$(pacmd list-cards | grep active | awk -F ':' '{print $3}' | awk -F '>' '{print $1}')
 
 if [[ "$ACTIVE" == "analog-stereo" ]]; then
-	pactl set-card-profile 0 output:hdmi-stereo
+	pactl set-card-profile 0 output:hdmi-stereo+input:analog-stereo
 	NEW="hdmi-stereo"
 else
-	pactl set-card-profile 0 output:analog-stereo
+	pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 	NEW="analog-stereo"
 fi
 

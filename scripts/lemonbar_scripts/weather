@@ -60,6 +60,8 @@ while true; do
 	    weathericon="\ue235"
 	elif [[ "$WEATHER" == "Haze" ]]; then
 	    weathericon="\ue235"
+	elif [[ "$WEATHER" == "mist" ]]; then
+	    weathericon="\ue235"
 	else
 	    weathericon="\ue0a4"
 	fi
