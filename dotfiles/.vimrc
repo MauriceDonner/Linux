@@ -46,7 +46,7 @@ inoremap <S-Tab> <C-N>
 " map <C-T> :w <bar> :Latexmk <CR>
 autocmd FileType python map <buffer> <C-T> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 autocmd FileType tex map <buffer> <C-T> :w<CR>:exec ':Latexmk'<CR>
-autocmd filetype cpp nnoremap <buffer> <C-T> :w<CR> :!g++ % -ggdb -o %:r && ./%:r<CR>
+autocmd filetype cpp nnoremap <buffer> <C-T> :w<CR> :!g++ % -ggdb -o %:r -std=c++17 && ./%:r<CR>
 map - dd p
 nnoremap <C-U> :vsplit <CR>
 nnoremap <C-I> :split <CR>
@@ -155,6 +155,7 @@ let g:quicktex_math = {
     \'cos'  : '\cos \left( <+++> \right) <++>',
     \'tan'  : '\tan \left( <+++> \right) <++>',
     \'log'  : '\log \left( <+++> \right) <++>',
+    \'lef' : '\left( <+++> \right) <++>',
     \'ln'   : '\ln \big( <+++> \big) <++>',
     \'and'  : '\quad \text{and} \quad <+++>',
     \'alpha': '\alpha <+++>',
