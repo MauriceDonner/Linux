@@ -3,7 +3,21 @@
 echo '
 \documentclass{article}
 
+% Deactivate sectsty warning when loading sectsty {{{
+\usepackage[immediate]{silence}
+\WarningFilter[temp]{latex}{Command}
+\usepackage{sectsty}
+    \sectionfont{\normalfont\sffamily\bfseries\color{blue!40!black}}
+    \subsectionfont{\normalfont\sffamily\bfseries\color{blue!30!black}}
+\DeactivateWarningFilters[temp]
+\makeatletter % disable the runtime redefinitions
+\let\SS@makeulinesect\relax
+\let\SS@makeulinepartchap\relax
+\makeatother
+% }}}
+
 \usepackage[margin=4cm]{geometry}
+    \setlength\parindent{0pt}
 \usepackage{fancyhdr}
     \pagestyle{fancy}
 \usepackage{fontspec}
