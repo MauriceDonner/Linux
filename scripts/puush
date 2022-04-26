@@ -1,0 +1,156 @@
+#!/bin/bash
+# Set API Key here
+PUUSH_API_KEY="3C8387BBE13DE4C7D39E715AFD8B501E"
+
+# Puush for Ubuntu/linux
+# Owner : Sunmock Yang
+# www.sunmock.com
+# May 2014
+#
+# Dependencies:
+# - gnome-screenshot
+# - curl
+# - zenity
+# - xclip
+# - notify-send
+#
+# Licence : Beerware
+#
+# Instructions:
+# - Add your puush API key to PUUSH_API_KEY (You can find your API key at http://puush.me/account/settings)
+# - Place this file wherever you want (/usr/local/bin)
+# - Set up keyboard shortcuts within linux (in Ubuntu it's system settings > keyboard > keyboard shortcuts > custom shortcuts)
+#
+# 		command			description		(recommended keyboard shortcut)
+#		---------------------------------------------------------------
+#		puush -c		puush window	(Ctrl + Shift + 2/@)
+#		puush -a		puush desktop	(Ctrl + Shift + 3/#)
+#		puush -b		area puush		(Ctrl + Shift + 4/$)
+#		puush -d		file upload		(Ctrl + Shift + U)
+#		puush -e		puush clipboard	(Ctrl + Shift + 1/!)
+#
+#
+# Notes:
+# - Link(s) will be copied into clipboard and appear in notifications
+# - puush curl upload code borrowed from online sources
+
+# Usage: puushFile [fileName]
+function puushFile ()
+{
+	if [ -z "$1" ]; then
+		echo "No file specified"
+		exit 1
+	elif [ ! -f "$1" ]; then
+		echo "Puush cancelled"
+		exit 1
+	fi
+
+	fileURL=`curl "https://puush.me/api/up" -# -F "k=$PUUSH_API_KEY" -F "z=waifu" -F "f=@$1" | sed -E 's/^.+,(.+),.+,.+$/\1\n/'`
+
+	if [ ! -z "$fileURL" ]; then
+		#Copy link to clipboard, show notification
+		printf $fileURL | xclip -selection "clipboard"
+		zenity --info --title="Puush" --text="push complete! \n$fileURL \nLink copied to clipboard!" --width=250 --timeout=2
+	fi
+}
+
+function helpText ()
+{
+  printf "_____________ puush for linux _____________\n"
+  printf "Created by Sunmock Yang using the puush api\n"
+  printf "\n"
+  printf "Usage:\n"
+  printf "  puush [OPTIONS] [PATH]\n"
+  printf "\n"
+  printf "OPTIONS:\n"
+  printf "  -a                 puush entire desktop\n"
+  printf "  -b                 select area to puush\n"
+  printf "  -c                 puush current window\n"
+  printf "  -d                 puush specific file (opens file dialog)\n"
+  printf "  -e                 puush clipboard contents\n"
+  printf "\n"
+  printf "  --help,-h          show this page\n"
+  printf "\n"
+  printf "PATH:\n"
+  printf "  PATH               optional: path of file to puush\n"
+}
+
+function generateFileName () { echo "/tmp/puush-linux ($(date +"%Y-%m-%d at %I.%M.%S")).png"; }
+
+
+if [ -z "$PUUSH_API_KEY" ]; then
+  echo "Set the variable PUUSH_API_KEY in $0"
+  echo "You can find your API key at http://puush.me/account/settings"
+
+  notify-send -i "$( cd "$( dirname "$0" )" && pwd )/icon.png" "Set the variable PUUSH_API_KEY in $0" "You can find your API key at http://puush.me/account/settings"
+
+  exit 1
+
+elif [ -z "$1" ]; then
+	echo "No file entered."
+	helpText
+  exit 1
+
+fi
+
+#Get file to puush and puush it
+case "$1" in
+	-a)
+		echo "Whole Desktop"
+			fileName=$(generateFileName)
+			gnome-screenshot -f "$fileName"
+			puushFile "$fileName"
+		;;
+
+	-b)
+		echo "Area"
+			fileName=$(generateFileName)
+			gnome-screenshot -a -f "$fileName"
+			puushFile "$fileName"
+		;;
+
+	-c)
+		echo "Window"
+			fileName=$(generateFileName)
+			gnome-screenshot -w -f "$fileName"
+			puushFile "$fileName"
+		;;
+
+	-d)
+		echo "File Upload"
+			fileName=`zenity --file-selection`
+			puushFile "$fileName"
+		;;
+
+	-e)
+		echo "Clipboard Upload"
+			targets=`xclip -selection clipboard -t TARGETS -o`
+			fileName="/tmp/puush-linux-clip"
+
+			for target in $targets
+			do
+				if [[ "$target" =~ "/" ]]; then
+					xclip -selection "clipboard" -t "$target" -o > "$fileName"
+					puushFile "$fileName"
+					exit $?
+				fi
+			done
+
+			# we're here because clipboard content's MIME-type is not really known. Does it even have a type?
+			# well, let's hope for the best and push it as plaintext
+
+			xclip -selection "clipboard" -t "text/plain" -o > "$fileName"
+			puushFile "$fileName"
+		;;
+
+	-h|--help)
+		helpText
+		exit 0
+		;;
+		
+	*)
+		echo "Upload $1"
+			puushFile "$1"
+		;;
+		
+esac
