@@ -21,11 +21,15 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# Set font path... Throws error on ssh login. Leaving this out
+# I think its because calling xset is only possible with X11 forwarding
 xset +fp /home/maurice/.fonts
 xset fp rehash
 
 export PATH=$PATH:/opt/
 export PATH=$PATH:/home/maurice/Documents/Linux/scripts/lemonbar_scripts/
+export PATH=$PATH:/home/maurice/.local/bin
+export PATH=$PATH:/home/maurice/.cargo/bin/
 #export PATH=$PATH:/opt/minecraft-launcher/
 
 # Start xServer

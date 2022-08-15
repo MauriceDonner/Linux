@@ -121,7 +121,17 @@ ranger() {
     fi
 }
 
+alias please="sudo"
+alias vim="nvim"
+
 bind "set completion-ignore-case on"
 bind "set show-all-if-ambiguous on"
-export EDITOR=vim
-#source /home/maurice/Documents/root/build/bin/thisroot.sh
+export EDITOR=nvim
+export BLENDER="/home/maurice/Programs/blender-3.2.0-linux-x64/"
+export PATH="$BLENDER:$PATH"
+
+PATH="/home/maurice/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/maurice/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/maurice/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/maurice/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/maurice/perl5"; export PERL_MM_OPT;
