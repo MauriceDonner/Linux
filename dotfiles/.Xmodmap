@@ -1,2 +1,9 @@
 keycode 105 = Multi_key
+keycode 108 = Mode_switch
+clear Mod1
+add mod1 = Alt_L 
+keysym q = q Q adiaeresis Adiaeresis
+keysym p = p P odiaeresis Odiaeresis
+keysym y = y Y udiaeresis Udiaeresis
+keysym s = s S ssharp
 
