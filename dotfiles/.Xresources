@@ -60,8 +60,8 @@ URxvt.color15:      #f9f9f9
 !! white (used for colorcolumn, nothing else)
 !URxvt.color15: #1e1e1e
 
-!URxvt*font:6x13,xft:cozette
-URxvt*font:xft:Monospace:size=9
+URxvt*font:6x13,xft:cozette
+!URxvt*font:xft:Monospace:size=9
 URxvt.perl-lib: /home/maurice/.urxvt/ext/
 URxvt.perl-ext-common: ...,font-size
 
