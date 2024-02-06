@@ -7,20 +7,63 @@ URxvt.keysym.Control-Down:   \033[1;5B
 URxvt.keysym.Control-Left:   \033[1;5D
 URxvt.keysym.Control-Right:  \033[1;5C
 
-! black
-URxvt.color0: #08090a
-!#1e1e1e
-! red
-URxvt.color1: #d12f2c
-URxvt.color9: #ff5917
-! green
-URxvt.color2: #c65087
-URxvt.color10: #c65087
-! blue
-URxvt.color12: #2a7dbf
-! magenta
-URxvt.color5: #cd00cd
-! white (used for colorcolumn, nothing else)
-URxvt.color15: #1e1e1e
+! special
+URxvt.foreground:   #f7b7ac
+URxvt.background:   #08090a
+URxvt.cursorColor:  #f7b7ac
 
-URxvt*font: 6x13
+! black
+URxvt.color0:       #1a1a1a
+URxvt.color8:       #888888
+
+! red
+URxvt.color1:       #9c3528
+URxvt.color9:       #d64937
+
+! pink
+URxvt.color2:       #9b456d
+URxvt.color10:      #c65087
+
+! yellow
+URxvt.color3:       #E6BE38
+URxvt.color11:      #fdd01d
+
+! blue
+URxvt.color4:       #0d68a8
+URxvt.color12:      #0f75bd
+
+! green
+URxvt.color5:       #4c7445
+URxvt.color13:      #689e5e
+
+! cyan
+URxvt.color6:       #288e9c
+URxvt.color14:      #37c3d6
+
+! white
+URxvt.color7:       #a2a2a2
+URxvt.color15:      #f9f9f9
+
+!! black
+!URxvt.color0: #08090a
+!!#1e1e1e
+!! red
+!URxvt.color1: #d12f2c
+!URxvt.color9: #ff5917
+!! green
+!URxvt.color2: #c65087
+!URxvt.color10: #c65087
+!! blue
+!URxvt.color12: #2a7dbf
+!! magenta
+!URxvt.color5: #cd00cd
+!! white (used for colorcolumn, nothing else)
+!URxvt.color15: #1e1e1e
+
+!URxvt*font:6x13,xft:cozette
+URxvt*font:xft:Monospace:size=9
+URxvt.perl-lib: /home/maurice/.urxvt/ext/
+URxvt.perl-ext-common: ...,font-size
+
+URxvt.keysym.Control-1: command:\033]710;6x13\007
+URxvt.keysym.Control-2: command:\033]710;xft:Monospace:size=9\007

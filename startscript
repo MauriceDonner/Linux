@@ -1,0 +1,82 @@
+#!/bin/bash
+
+echo "Adding user maurice to sudo group..." && sleep 1;
+cd /sbin
+./usermod -aG maurice
+
+echo "Installing xorg and i3 window manager..." && sleep 1;
+apt-get install xorg i3-wm i3status i3lock
+echo "Installing various software..." && sleep 1;
+apt-get install git ranger vim vim-gtk rxvt htop sudo acpi lemonbar xdotool 
+apt-get install alsa-utils pulseaudio xbacklight feh ipython3 xclip byzanz 
+apt-get install dmenu g++ texlive-full mupdf thunderbird htop python3-pip scrot
+apt-get install npm software-properties-common vlc xinput
+echo "Installing Google Chrome..." && sleep 1;
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+apt-get install ./google-chrome-stable_current_amd64.deb
+rm google-chrome-stable_current_amd64.deb
+echo "Installing Telegram Desktop..." && sleep 1;
+wget https://telegram.org/dl/desktop/linux
+tar -xvf linux
+mv Telegram/* /opt/
+rmdir Telegram
+echo "Installing i3-resurrect..." && sleep 1;
+pip3 install --user --upgrade i3-resurrect
+
+echo "Cloning Linux configuration repository from Github..." && sleep 1;
+mkdir -p /home/maurice/Documents/
+cd /home/maurice/Documents
+git clone https://github.com/MauriceDonner/Linux.git
+
+echo "Moving all files into their respective directories..." && sleep 1;
+mkdir -p /home/maurice/.config/i3
+mkdir -p /home/maurice/.config/ranger
+mkdir -p /home/maurice/.config/htop
+mkdir -p /home/maurice/.local/share/Trash
+mkdir -p /home/maurice/Documents/Stuff
+cp /home/maurice/Documents/Linux/dotfiles/.Xresources /home/maurice/
+cp /home/maurice/Documents/Linux/dotfiles/.Xmodmap /home/maurice/
+cp /home/maurice/Documents/Linux/dotfiles/.bashrc /home/maurice/
+cp /home/maurice/Documents/Linux/dotfiles/.profile /home/maurice/
+cp /home/maurice/Documents/Linux/dotfiles/.vimrc /home/maurice/
+cp /home/maurice/Documents/Linux/dotfiles/.config/i3/config /home/maurice/.config/i3/
+cp /home/maurice/Documents/Linux/other/rc.conf /home/maurice/.config/ranger/
+cp /home/maurice/Documents/Linux/other/rifle.conf /home/maurice/.config/ranger/
+cp /home/maurice/Documents/Linux/other/commands.py /home/maurice/.config/ranger/
+cp /home/maurice/Documents/Linux/dotfiles/.config/htop/htoprc /home/maurice/.config/htop/
+
+echo "Configuring vim plugins..." && sleep 1;
+mkdir -p /home/maurice/.vim/autoload/
+cd /home/maurice/.vim/autoload/
+wget https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+cd
+
+echo "Configuring wpa_supplicant..." && sleep 1;
+cp /home/maurice/Documents/Linux/other/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+cp /home/maurice/Documents/Linux/other/ca.pem /home/maurice/Documents/Stuff/
+cp /home/maurice/Documents/Linux/other/interfaces /etc/network/interfaces
+cat /home/maurice/Documents/Linux/other/xorg.conf >> /usr/share/doc/xserver-xorg-video-intel/xorg.conf
+chmod 700 /etc/wpa_supplicant/wpa_supplicant.conf
+
+echo "Moving custom scripts..." && sleep 1;
+cp -r /home/maurice/Documents/Linux/scripts/* /opt/
+
+echo "Installing wuncon siji font for lemonbar..." && sleep 1;
+cd /home/maurice/Documents/Stuff/
+git clone https://github.com/stark/siji
+cd siji
+./install.sh -d /home/maurice/.fonts
+cd
+echo "Installing gohufont-2.1 for lemonbar..." && sleep 1;
+cd home/maurice/
+wget https://font.gohu.org/gohufont-2.1.tar.gz
+tar -xvf gohufont-2.1.tar.gz
+mv gohufont-2.1/*.pcf.gz /home/maurice.fonts
+rm -r gohufont-2.1/
+mkfontdir .fonts/
+xset fp+ /home/maurice/.fonts/
+xset fp rehash
+cd
+
+echo "Finalizing..." && sleep 1;
+chown -R maurice /home/maurice/*
