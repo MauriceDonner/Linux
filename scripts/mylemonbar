@@ -58,7 +58,7 @@ Clock() {
 # {{{ Weather
 
 Weather() {
-WEATHER=$(cat /home/maurice/Documents/Linux/scripts/lemonbar_scripts/weather.out)
+WEATHER=$(cat /home/maurice/Documents/Stuff/Linux/scripts/lemonbar_scripts/weather.out)
 echo -e "$WEATHER"
 }
 
@@ -66,7 +66,6 @@ echo -e "$WEATHER"
 
 # {{{ Songtitle
 
- Commented until working again
 Spotify() {
 # if spotify is started
 if [ "$(pidof spotify)" ] ; then
@@ -97,7 +96,7 @@ Wifi() {
 	
 	if [ $WIFION == 1 ]; then
 
-	    DEVICE=$(cat /proc/net/wireless | tail -n 1 | awk -F ':' '{print $1}')
+	    DEVICE=$(ip link show | grep "state UP" | awk -F ': ' '{print $2}' | head -n 1)
 	    if [ "$DEVICE" == "wlp3s0" ]; then 
 		QUALITY=$(cat /proc/net/wireless | awk -F ' ' 'NR==3 {print $3}' | cut -b 1-2)
 		QPERCENT=$(awk "BEGIN {print 100 * $QUALITY / 70 - 1}" | cut -b 1-2)
@@ -111,9 +110,10 @@ Wifi() {
 			wifiicon="\ue21f"
 		    fi 
 		    echo -e "%{T2}$wifiicon %{T1}$WIFINAME"
-	    elif [ "$DEVICE" == "eth0" ]; then
-		wifiicon="\ue2ff"
-		echo -e "%{T2}$wifiicon %{T1}$WIFINAME"
+	    elif [ "$DEVICE" == "enp0s25" ]; then
+		ip=$(ip a | grep enp0s25 | awk -F '/' '{print $1}' | awk -F ' ' '{print $NF}' | tail -n 1 | tail -n 1)
+		wifiicon="\ue19c $ip"
+		echo -e "%{T2}$wifiicon"
 	    fi
 
 	else
@@ -133,7 +133,7 @@ Volume() {
 		speakericon="\ue04f"
 	elif [[ "$VOLPERC" < 50 ]] ; then
 		speakericon="\ue04e"
-	elif [[ "$VOLPERC" > 49 ]] ; then
+	elif [[ "$VOLPERC" > 50 ]] ; then
 		speakericon="%{T2}\ue050"
 	fi
 	if [[ "$MICMUTE" == "yes" ]] ; then
@@ -192,7 +192,7 @@ Battery() {
 while true; do
 
 	status="%{l} $(Workspace)"	
-	status="$status %{c} $(Clock)$(Weather)"
+	status="$status %{c} $(Clock) $(Weather)"
 	status="$status %{r} $(Spotify) $(Wifi) \ $(Volume) \ $(Battery)" 
 	echo $status
         sleep 1;
