@@ -10,6 +10,7 @@ set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 set hlsearch
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 filetype plugin on
 set foldenable
@@ -30,9 +31,9 @@ vnoremap <C-c> :w !pbcopy<CR><CR> noremap <C-v> :r !pbpaste<CR><CR>
 
 " {{{ Colors
 
-colorscheme desert
+"colorscheme desert
 set colorcolumn=80
-highlight colorcolumn ctermbg=15
+highlight colorcolumn ctermbg=0
 let &colorcolumn=join(range(81,999),",")
 
 " }}}
@@ -135,6 +136,9 @@ let g:quicktex_tex = {
     \'minip': "\\begin{minipage}{<+++>\\textwidth}\<CR><++>\<CR>\\end{minipage}",
     \'verb': '\verb`<+++>` <++>',
     \'sf'  : '\textsf{<+++>} <++>',
+    \'ver' : '<verbatim><+++></verbatim><++>',
+    \'lit' : '<literal><+++></literal><++>',
+    \'col' : '\color{<+++>}<++>\color{black}<++>'
     \}
 
 let g:quicktex_math = {
@@ -156,6 +160,10 @@ let g:quicktex_math = {
     \'tan'  : '\tan \left( <+++> \right) <++>',
     \'log'  : '\log \left( <+++> \right) <++>',
     \'lef' : '\left( <+++> \right) <++>',
+    \'lefc' : '\left\{ <+++> \right\} <++>',
+    \'lefs' : '\left[ <+++> \right] <++>',
+    \'lef|' : '\left| <+++> \right| <++>',
+    \'lef<' : '\langle <+++> \rangle <++>',
     \'ln'   : '\ln \big( <+++> \big) <++>',
     \'and'  : '\quad \text{and} \quad <+++>',
     \'alpha': '\alpha <+++>',
@@ -172,7 +180,8 @@ let g:quicktex_math = {
     \'zeta' : '\zeta <+++>',
     \'pi'   : '\pi <+++>',
     \'rho'  : '\rho <+++>',
-    \'phi'  : '\varphi <+++>',
+    \'phi'  : '\phi <+++>',
+    \'varphi': '\varphi <+++>',
     \'psi'  : '\psi <+++>',
     \'sig'  : '\sigma <+++>',
     \'tau'  : '\tau <+++>',

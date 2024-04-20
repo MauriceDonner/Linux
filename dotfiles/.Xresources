@@ -61,9 +61,11 @@ URxvt.color15:      #f9f9f9
 !URxvt.color15: #1e1e1e
 
 URxvt*font:6x13,xft:cozette
-!URxvt*font:xft:Monospace:size=9
+!URxvt*font:xft:HackNerdFont:size=9
 URxvt.perl-lib: /home/maurice/.urxvt/ext/
 URxvt.perl-ext-common: ...,font-size
 
-URxvt.keysym.Control-1: command:\033]710;6x13\007
-URxvt.keysym.Control-2: command:\033]710;xft:Monospace:size=9\007
+URxvt.keysym.Control-1: command:\033]710;6x13,xft:cozette\007
+URxvt.keysym.Control-2: command:\033]710;xft:HackNerdFont:size=12\007
+
+Xft.dpi: 96

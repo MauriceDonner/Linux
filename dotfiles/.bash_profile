@@ -30,7 +30,7 @@ export PATH=$PATH:/opt/
 export PATH=$PATH:/home/maurice/Documents/Linux/scripts/lemonbar_scripts/
 export PATH=$PATH:/home/maurice/.local/bin
 export PATH=$PATH:/home/maurice/.cargo/bin/
-#export PATH=$PATH:/opt/minecraft-launcher/
+export PATH=$PATH:/home/maurice/Programs/corryvreckan/bin/
 
 # Start xServer
 if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then

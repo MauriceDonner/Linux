@@ -122,13 +122,22 @@ ranger() {
 }
 
 alias please="sudo"
-alias vim="nvim"
+alias newruby="/opt/rubies/ruby-3.0.6/bin/ruby"
 
 bind "set completion-ignore-case on"
 bind "set show-all-if-ambiguous on"
 export EDITOR=nvim
-export BLENDER="/home/maurice/Programs/blender-3.2.0-linux-x64/"
-export PATH="$BLENDER:$PATH"
+export MLR1DAQBOARD="/home/maurice/Programs/apts-dpts-ce65-daq-software/tools/"
+export PATH="$MLR1DAQBOARD:$PATH"
+export PATH=$PATH:/home/maurice/Programs/corryvreckan/bin/:$PATH
+export PATH=/usr/local/go/bin:$PATH
+
+
+export ROOTSYS=/home/maurice/Programs/root
+export PATH=$PATH:$ROOTSYS/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root
+export EUDAQPATH=/home/maurice/Programs/eudaq2
+source /home/maurice/Programs/root/bin/thisroot.sh
 
 PATH="/home/maurice/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/maurice/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
