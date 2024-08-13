@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$(pgrep -fl 2fa)" ]; then
+	killall 2fa
+	rm /tmp/code.out
+else
+	exec 2fa
+fi

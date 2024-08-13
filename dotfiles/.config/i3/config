@@ -34,13 +34,14 @@ set $right l
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec urxvt 
+bindsym $mod+Shift+Return exec urxvt -bg '#160916'
+bindsym $mod+Return exec urxvt # Start terminal with bitmap font
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+Shift+d exec dmenu_run
+bindsym $mod+Shift+d exec dmenu_run -i -p 'X220' -nb '#08090e' -fn 'courier:pixelsize=15'
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -53,16 +54,16 @@ bindsym $mod+$up focus up
 bindsym $mod+$right focus right
 
 # Use Cursor Keys to turn screen around
-bindsym $mod+Left exec xrandr  --output LVDS1 --rotate left
-bindsym $mod+Down exec xrandr  --output LVDS1 --rotate normal
-bindsym $mod+Up exec xrandr --output LVDS1 --rotate inverted
-bindsym $mod+Right exec xrandr --output LVDS1 --rotate right
+bindsym $mod+Left exec xrandr -o right 
+bindsym $mod+Down exec xrandr -o normal  
+bindsym $mod+Up exec xrandr -o inverted  
+bindsym $mod+Right exec xrandr -o left  
 
 # move focused window
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+$left move left 40 px
+bindsym $mod+Shift+$down move down 40 px
+bindsym $mod+Shift+$up move up 40 px
+bindsym $mod+Shift+$right move right 40 px
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -80,7 +81,7 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+s layout stacking #used for spotify, might add later again
+bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
@@ -141,10 +142,10 @@ mode "resize" {
         bindsym $right resize grow width 5 px or 5 ppt
 
         # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 5 px or 5 ppt
-        bindsym Down resize grow height 5 px or 5 ppt
-        bindsym Up resize shrink height 5 px or 5 ppt
-        bindsym Right resize grow width 5 px or 5 ppt
+        bindsym Left resize shrink width 1 px or 1 ppt
+        bindsym Down resize grow height 1 px or 1 ppt
+        bindsym Up resize shrink height 1 px or 1 ppt
+        bindsym Right resize grow width 1 px or 1 ppt
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"
@@ -155,7 +156,9 @@ bindsym $mod+r mode "resize"
 
 #Lemonbar scripts
 exec weather
-exec xset fp+ /usr/share/fonts/ && mylemonbar 
+exec xset +fp /home/maurice/.fonts/
+exec xset fp rehash
+exec mylemonbar 
 
 #Keyboard bindings Function Keys
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20
@@ -174,16 +177,17 @@ bindsym XF86Battery exec toggleaudio
 
 #Keyboard Bindings General
 bindsym $mod+c exec google-chrome
-bindsym $mod+t exec Telegram
+bindsym $mod+t exec Updater
 bindsym $mod+Shift+t exec thunderbird
-bindsym $mod+Shift+i exec nomacs
 #bindsym $mod+Shift+t exec Telegram -many -workdir ~/.telegram2ndprofile
 bindsym $mod+p exec urxvt -e ipython3
-bindsym $mod+i exec urxvt -e ranger
-bindsym $mod+s exec signal-desktop
+bindsym $mod+Shift+i exec code_wrapper
+bindsym $mod+o exec xset dpms force off
 #OLD bindsym --release $mod+Shift+s exec scrot -s 'Capture_%m-%d-%y_%H:%M_[$wx$h].png' -e 'mv $f /home/maurice/Pictures/Screenshots/'
 bindsym --release $mod+Shift+s exec screenshot
 bindsym --release $mod+Shift+g exec screengif
+bindsym $mod+greater move workspace to output down
+bindsym $mod+less move workspace to output up
 bindsym --release Print exec screenshot
 bindsym $mod+x exec xfontsel -sample "The Quick Brown Fox Jumps Over The Lazy Dog | the quick brown fox jumps over the lazy dog"
 bindsym $mod+g exec token
@@ -205,6 +209,7 @@ client.placeholder      #000000 #000000 #ffffff #000000   #0c0c0c
 hide_edge_borders smart 
 exec --no-startup-id feh --randomize --bg-fill /home/maurice/Pictures/Wallpapers/*
 new_window pixel 2
+font 6x13
 mouse_warping output
 
 #For Special characters
@@ -212,3 +217,8 @@ exec xmodmap .Xmodmap
 
 #Open Standard Workspace
 exec i3-resurrect restore -p default
+
+#Turn off screen saver
+exec xset s off
+exec xset -dpms
+exec xset s noblank

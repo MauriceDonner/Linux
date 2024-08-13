@@ -10,6 +10,7 @@ set shiftwidth=4
 set noexpandtab
 set hlsearch
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType tex let b:coc_suggest_disable = 1
 set foldenable
 set foldmethod=marker
 
@@ -31,6 +32,13 @@ vnoremap <C-c> :w !pbcopy<CR><CR> noremap <C-v> :r !pbpaste<CR><CR>
 
 let NERDTreeMinimalUI=1
 let g:coc_disable_startup_warning=1
+
+let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=0 ctermbg=0
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=12 ctermbg=12
 " }}}
 
 " Vim Bindings {{{
@@ -210,6 +218,7 @@ Plug 'https://github.com/neoclide/coc.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'LaTeX-Box-Team/LaTeX-Box'
 Plug 'brennier/quicktex'
+Plug 'nathanaelkane/vim-indent-guides'
 Plug 'https://github.com/mg979/vim-visual-multi'
 
 call plug#end()
@@ -248,7 +257,8 @@ let g:quicktex_tex = {
     \'verb': '\verb`<+++>` <++>',
     \'sf'  : '\textsf{<+++>} <++>',
     \'ver' : '<verbatim><+++></verbatim><++>',
-    \'lit' : '<literal><+++></literal><++>'
+    \'lit' : '<literal><+++></literal><++>',
+    \'hl'  : '\highlight{<+++>}<++>',
     \}
 
 let g:quicktex_math = {

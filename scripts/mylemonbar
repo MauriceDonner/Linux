@@ -50,7 +50,7 @@ Workspace() {
 Clock() {
         DATETIME=$(date "+%a %b %d")
 	CLOCK=$(date "+%T")
-	echo -e "$dateicon $DATETIME $clockicon $CLOCK %{F-}%{B-}"
+	echo -e "$dateicon $DATETIME\0330m $clockicon $CLOCK %{F-}%{B-}"
 }
 
 # }}}
@@ -66,6 +66,21 @@ echo -e "$WEATHER"
 
 # {{{ Songtitle
 
+Code() {
+if [ "$(pgrep -fl 2fa)" ] ; then
+	CERN=$(sed '1!d' /tmp/code.out)
+	GITH=$(sed '2!d' /tmp/code.out)
+	LEFT=$(sed '3!d' /tmp/code.out)
+	OUTPUT="CERN: %{F#0f75bd}$CERN%{F#C65087}   GITHUB: %{F#0f75bd}$GITH%{F#C65087}"
+	
+	if (( $LEFT <= 5 )); then
+		echo "%{F#D64937}$LEFT%{F#C65087} $OUTPUT"
+	else
+		echo "$LEFT $OUTPUT"
+	fi
+fi
+}
+
 Spotify() {
 # if spotify is started
 if [ "$(pidof spotify)" ] ; then
@@ -77,9 +92,9 @@ if [ "$(pidof spotify)" ] ; then
 	SONGNAME="$artist - $title"
 
 	if [ $status == 'Playing' ] ; then
-		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}\ " 
+		echo -e "%{F${col_song}} %{T2}\ue09a %{T1}$SONGNAME %{F${col_t}}" 
 	elif [ $status == 'Paused' ] ; then
-		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}\ " 
+		echo -e "%{F${col_song}} %{T2}\ue09b %{F${col_t}}" 
 	fi
 fi
 
@@ -191,10 +206,16 @@ Battery() {
 # {{{ Output
 while true; do
 
-	status="%{l} $(Workspace)"	
-	status="$status %{c} $(Clock) $(Weather)"
-	status="$status %{r} $(Spotify) $(Wifi) \ $(Volume) \ $(Battery)" 
-	echo $status
+	echo "%{l}\
+	$(Workspace) \
+	%{c}\
+	$(Clock) $(Weather) \
+	%{r}\
+	$(Code) \
+	%{B#444546}$(Spotify)\
+	%{B#303132} $(Wifi) \
+	%{B#1c1d1e} $(Volume) \
+	%{B#08090a} $(Battery) " 
         sleep 1;
 
 done | lemonbar -g "x18" -B "${col_b}" -F "${col_t}" -f "$font1" -f "$font2"
